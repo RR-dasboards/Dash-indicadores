@@ -136,6 +136,18 @@
   .hl-row .val{font-weight:800; font-variant-numeric:tabular-nums; white-space:nowrap;}
   .hl-card.grow .val{color:var(--green);} .hl-card.drop .val{color:var(--red);}
 
+  .hl-row.clickable{position:relative; cursor:pointer; border-radius:8px; margin:0 -10px; padding:7px 26px 7px 10px; transition:background .15s ease;}
+  .hl-row.clickable:hover{background:rgba(255,255,255,0.06);}
+  .hl-row.clickable:hover .name{color:var(--text);}
+  .hl-row.clickable::after{content:'→'; position:absolute; right:9px; top:50%; transform:translateY(-50%); opacity:0; color:var(--teal); font-weight:700; transition:opacity .15s ease;}
+  .hl-row.clickable:hover::after{opacity:1;}
+  @keyframes panelFlash{
+    0%{box-shadow:0 0 0 0 rgba(45,217,195,0); border-color:var(--border);}
+    12%{box-shadow:0 0 0 3px rgba(45,217,195,.6); border-color:var(--teal);}
+    100%{box-shadow:0 0 0 0 rgba(45,217,195,0); border-color:var(--border);}
+  }
+  .panel-flash{animation:panelFlash 1.8s ease-out;}
+
   table{width:100%; border-collapse:collapse; font-size:12px;}
   th{text-align:left; color:var(--text-faint); font-weight:600; text-transform:uppercase; letter-spacing:.5px; font-size:10px; padding:8px 10px; border-bottom:1px solid var(--border);}
   th.sortable-th{cursor:pointer; user-select:none; transition:color .15s ease;}
@@ -273,33 +285,33 @@
   <!-- THEME 0 — VISÃO GERAL                                         -->
   <!-- ============================================================ -->
   <section class="theme-section" id="section-overview">
-    <div class="section-title"><h2>Panorama por Área</h2><span class="tag">CLIQUE NUM CARD PARA ABRIR A ABA</span></div>
+    <div class="section-title"><h2>Panorama por Área</h2><span class="tag">CLIQUE NO CARD PARA ABRIR A ABA · CLIQUE NUM ITEM PARA IR DIRETO AO DADO</span></div>
     <div class="grid-3">
       <div class="panel" style="animation-delay:.05s; cursor:pointer" onclick="showTheme('reg-prod')" title="Abrir Regulação · Produtividade">
         <h3>Regulação</h3>
         <div class="desc">Produtividade, desempenho e volume de solicitações</div>
         <div class="hl-grid" style="grid-template-columns:1fr; margin-top:12px">
-          <div class="hl-row"><span class="name">Guias periciadas (jun)</span><span class="val" style="color:var(--teal)">11.625</span></div>
-          <div class="hl-row"><span class="name">SLA eletivos dentro do padrão</span><span class="val" style="color:var(--green)">66,2%</span></div>
-          <div class="hl-row"><span class="name">Comparecimento perícia presencial</span><span class="val" style="color:var(--red)">81,2%</span></div>
+          <div class="hl-row clickable" title="Ir para o gráfico de guias solicitadas, periciadas e pendentes" onclick="event.stopPropagation(); showTheme('reg-prod','rpGeralPanel')"><span class="name">Guias periciadas (jun)</span><span class="val" style="color:var(--teal)">11.625</span></div>
+          <div class="hl-row clickable" title="Ir para o SLA de emissão de guias eletivas" onclick="event.stopPropagation(); showTheme('reg-des','rdSlaEletivoPanel')"><span class="name">SLA eletivos dentro do padrão</span><span class="val" style="color:var(--green)">66,2%</span></div>
+          <div class="hl-row clickable" title="Ir para o detalhamento de perícia presencial por médico" onclick="event.stopPropagation(); showTheme('reg-des','rdPericiaDetalhePanel')"><span class="name">Comparecimento perícia presencial</span><span class="val" style="color:var(--red)">81,2%</span></div>
         </div>
       </div>
       <div class="panel" style="animation-delay:.1s; cursor:pointer" onclick="showTheme('con-prod')" title="Abrir Concorrente · Produtividade">
         <h3>Concorrente</h3>
         <div class="desc">Internações, enfermagem e auditoria médica</div>
         <div class="hl-grid" style="grid-template-columns:1fr; margin-top:12px">
-          <div class="hl-row"><span class="name">Visitas no semestre</span><span class="val" style="color:var(--blue)">7.516</span></div>
-          <div class="hl-row"><span class="name">Dentro do prazo</span><span class="val" style="color:var(--green)">89,2%</span></div>
-          <div class="hl-row"><span class="name">TMP crítico (H. Primavera)</span><span class="val" style="color:var(--red)">32 dias</span></div>
+          <div class="hl-row clickable" title="Ir para a evolução das visitas realizadas no semestre" onclick="event.stopPropagation(); showTheme('con-des','cdEvolucaoPanel')"><span class="name">Visitas no semestre</span><span class="val" style="color:var(--blue)">7.516</span></div>
+          <div class="hl-row clickable" title="Ir para o panorama de atraso de visitas" onclick="event.stopPropagation(); showTheme('con-des','cdAtrasoPanel')"><span class="name">Dentro do prazo</span><span class="val" style="color:var(--green)">89,2%</span></div>
+          <div class="hl-row clickable" title="Ir para o TMP de Enfermaria — Hospital Primavera" onclick="event.stopPropagation(); showTheme('con-des','cdTmpEnfPanel')"><span class="name">TMP crítico (H. Primavera)</span><span class="val" style="color:var(--red)">32 dias</span></div>
         </div>
       </div>
       <div class="panel" style="animation-delay:.15s; cursor:pointer" onclick="showTheme('retro-prod')" title="Abrir Retrospectiva · Produtividade">
         <h3>Retrospectiva</h3>
         <div class="desc">Contas auditadas e recursos por prestador</div>
         <div class="hl-grid" style="grid-template-columns:1fr; margin-top:12px">
-          <div class="hl-row"><span class="name">Contas auditadas (jun)</span><span class="val" style="color:var(--teal)">9.601</span></div>
-          <div class="hl-row"><span class="name">Recursos apresentados</span><span class="val" style="color:var(--green)">522 (-9,8%)</span></div>
-          <div class="hl-row"><span class="name">Maior retrabalho</span><span class="val" style="color:var(--red)">São Lucas 25,12%</span></div>
+          <div class="hl-row clickable" title="Ir para contas por tipo de atendimento" onclick="event.stopPropagation(); showTheme('retro-prod','rrTipoPanel')"><span class="name">Contas auditadas (jun)</span><span class="val" style="color:var(--teal)">9.601</span></div>
+          <div class="hl-row clickable" title="Ir para o comparativo geral de recursos" onclick="event.stopPropagation(); showTheme('retro-prod','rrGeralPanel')"><span class="name">Recursos apresentados</span><span class="val" style="color:var(--green)">522 (-9,8%)</span></div>
+          <div class="hl-row clickable" title="Ir para recursos por prestador — índice de retrabalho" onclick="event.stopPropagation(); showTheme('retro-prod','rrRecursosPanel')"><span class="name">Maior retrabalho</span><span class="val" style="color:var(--red)">São Lucas 25,12%</span></div>
         </div>
       </div>
     </div>
@@ -331,7 +343,7 @@
   <section class="theme-section" id="section-reg-prod">
     <div class="section-title"><h2>Produtividade Geral SADT</h2><span class="tag">JUNHO 2026 · 19 DIAS ÚTEIS</span></div>
     <div class="grid-2">
-      <div class="panel" style="animation-delay:.05s">
+      <div class="panel" id="rpGeralPanel" style="animation-delay:.05s">
         <div class="panel-head"><h3>Guias solicitadas, periciadas e pendentes</h3></div>
         <div class="desc">Total de guias solicitadas = 9.700 (Junho) + 2.684 pendentes de Maio</div>
         <div class="chart-box" style="height:260px"><canvas id="rpGeral"></canvas></div>
@@ -421,7 +433,7 @@
         <div class="chart-box" style="height:260px"><canvas id="rdPericiaAgendaRealiza"></canvas></div>
       </div>
     </div>
-    <div class="panel" style="margin-top:18px; animation-delay:.05s">
+    <div class="panel" id="rdPericiaDetalhePanel" style="margin-top:18px; animation-delay:.05s">
       <h3>Detalhamento por médico</h3>
       <div class="desc">Perícias agendadas e realizadas, mês a mês</div>
       <div id="rdPericiaTable" style="margin-top:8px"></div>
@@ -430,7 +442,7 @@
     </div>
 
     <div class="section-title"><h2>SLA de Emissão de Guias</h2><span class="tag">PRAZO DE ATENDIMENTO</span></div>
-    <div class="panel" style="animation-delay:.05s">
+    <div class="panel" id="rdSlaEletivoPanel" style="animation-delay:.05s">
       <div class="panel-head"><h3>Eletivos — composição por prazo</h3><span class="badge up">66,2% dentro do padrão (≥45 dias)</span></div>
       <div class="desc">629 (Abr) · 713 (Mai) · 708 (Jun) guias emitidas</div>
       <div class="grid-3" style="margin-top:10px">
@@ -635,13 +647,13 @@
       <div class="stat-box"><div class="n" style="color:var(--green)">89,2%</div><div class="l">Dentro do Prazo</div></div>
       <div class="stat-box"><div class="n" style="color:var(--red)">10,8%</div><div class="l">Em Atraso</div></div>
     </div>
-    <div class="panel" style="animation-delay:.05s">
+    <div class="panel" id="cdEvolucaoPanel" style="animation-delay:.05s">
       <h3>Evolução das visitas realizadas</h3>
       <div class="chart-box" style="height:300px"><canvas id="cdEvolucao"></canvas></div>
     </div>
 
     <div class="section-title"><h2>Panorama de Atraso de Visitas</h2><span class="tag">TENDÊNCIA E SLA</span></div>
-    <div class="grid-2">
+    <div class="grid-2" id="cdAtrasoPanel">
       <div class="panel" style="animation-delay:.05s">
         <h3>Evolução do índice de atraso</h3>
         <div class="chart-box" style="height:300px"><canvas id="cdAtrasoLine"></canvas></div>
@@ -655,7 +667,7 @@
 
     <div class="section-title"><h2>Tempo Médio de Permanência (TMP)</h2><span class="tag">ENFERMARIA E UTI · DIAS</span></div>
     <div class="grid-2">
-      <div class="panel" style="animation-delay:.05s">
+      <div class="panel" id="cdTmpEnfPanel" style="animation-delay:.05s">
         <h3>TMP Enfermaria · Junho</h3>
         <div class="desc">Meta interna: 3–5 dias · <b style="color:var(--text)">São Marcelo e Recomeçar: até 50 dias</b> (perfil de longa permanência)</div>
         <div class="chart-box" style="height:280px"><canvas id="cdTmpEnf"></canvas></div>
@@ -677,7 +689,7 @@
   <!-- ============================================================ -->
   <section class="theme-section" id="section-retro-prod">
     <div class="section-title"><h2>Comparativo Geral</h2><span class="tag">ABR / MAI / JUN 2026</span></div>
-    <div class="panel" style="animation-delay:.05s">
+    <div class="panel" id="rrGeralPanel" style="animation-delay:.05s">
       <div id="rrGeralTable"></div>
     </div>
 
@@ -722,7 +734,7 @@
     </div>
 
     <div class="section-title"><h2>Contas por Tipo de Atendimento</h2><span class="tag">JUNHO · TOTAL 9.601</span></div>
-    <div class="panel" style="animation-delay:.05s">
+    <div class="panel" id="rrTipoPanel" style="animation-delay:.05s">
       <div id="rrTipoTable"></div>
     </div>
 
@@ -740,7 +752,7 @@
     </div>
 
     <div class="section-title"><h2>Recursos por Prestador</h2><span class="tag">ÍNDICE DE RETRABALHO</span></div>
-    <div class="panel" style="animation-delay:.05s">
+    <div class="panel" id="rrRecursosPanel" style="animation-delay:.05s">
       <div id="rrRecursosTable"></div>
       <div class="insight warn">Hospital São Lucas (25,12%), Hospital Cirurgia (18,70%) e Hospital do Coração (16,76%) têm os maiores índices de retrabalho — destacados em vermelho.</div>
     </div>
@@ -1558,7 +1570,7 @@ function replayChartAnimations(id){
     }
   });
 }
-function showTheme(id){
+function showTheme(id, anchorId){
   themes.forEach(t=>{
     document.getElementById('section-'+t).classList.toggle('active', t===id);
   });
@@ -1566,8 +1578,38 @@ function showTheme(id){
     btn.classList.toggle('active', btn.dataset.theme===id);
   });
   renderKpis(id);
-  if(!initialized[id]){ initFns[id](); initialized[id] = true; }
-  else { replayChartAnimations(id); }
+
+  function goToAnchor(withFlash){
+    if(!anchorId) return;
+    const el = document.getElementById(anchorId);
+    if(!el) return;
+    el.scrollIntoView({behavior:'smooth', block:'center'});
+    if(withFlash){
+      el.classList.remove('panel-flash');
+      void el.offsetWidth; // reinicia a animação se já tiver rodado antes
+      el.classList.add('panel-flash');
+      setTimeout(()=> el.classList.remove('panel-flash'), 1800);
+    }
+  }
+
+  if(anchorId){
+    // rola pro destino imediatamente — a caixa do gráfico/tabela já reserva o espaço no
+    // layout (height fixa em CSS), então não é preciso esperar os gráficos serem desenhados
+    requestAnimationFrame(()=> requestAnimationFrame(()=> goToAnchor(true)));
+  }
+
+  if(!initialized[id]){
+    initialized[id] = true;
+    // monta os gráficos da aba DEPOIS de já termos disparado a rolagem — em abas com muitos
+    // gráficos (ex: Regulação · Desempenho, ~12 canvases) essa montagem síncrona é o que
+    // realmente atrasava o clique, não o scroll em si
+    setTimeout(()=>{
+      initFns[id]();
+      goToAnchor(false); // reajusta a posição caso alguma tabela recém-preenchida tenha mudado a altura do card
+    }, 0);
+  } else {
+    replayChartAnimations(id);
+  }
 }
 window.showTheme = showTheme;
 document.querySelectorAll('.tab-btn[data-theme]').forEach(btn=>{
