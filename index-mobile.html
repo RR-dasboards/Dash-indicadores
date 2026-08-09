@@ -472,13 +472,14 @@
       <div class="desc">Médicos, dentista e enfermeiras — soma de <span style="color:var(--blue)">▉</span> perícias SADT e <span style="color:var(--amber)">▉</span> reversões de guias de cirurgias/procedimentos no Benner · total ao final da barra</div>
       <div class="chart-box" style="height:460px"><canvas id="rpPericiasSadt"></canvas></div>
       <div class="insight">Somando as duas atividades, o setor tratou <b>12.241 guias</b> em julho: 10.579 perícias SADT e 1.662 reversões de cirurgias/procedimentos. <b>Dra. Ana Angélica Dantas</b> lidera com 1.850 (1.824 perícias + 26 reversões), seguida de Dra. Marcela com 1.751 e Dr. André Luiz com 1.589.</div>
+      <div class="insight">Duas observações de turno registradas pelo setor: <b>Dr. João Oliveira Deda</b> se ausentou em 8 turnos previstos em julho, já compensados com atuação adicional em maio e junho — o que explica sua produção mais baixa no mês (745). <b>Dra. Ana Angélica Dantas</b> realizou 2 turnos adicionais em julho para compensar 2 turnos que fará em agosto — o que contribui para sua liderança no mês (1.824).</div>
 
     </div>
     <div class="panel" style="margin-top:18px; animation-delay:.1s">
       <h3>Média de guias periciadas por hora</h3>
-      <div class="desc">Meta: 20 perícias/hora · <span style="color:#3ddc84">▉</span> atingiu · <span style="color:#f5b342">▉</span> próximo · <span style="color:#f2884a">▉</span> distante · base: perícias SADT ÷ (horas/dia × turnos)</div>
+      <div class="desc">Meta: 20 perícias/hora · <span style="color:#3ddc84">▉</span> atingiu · <span style="color:#f5b342">▉</span> próximo · <span style="color:#f2884a">▉</span> distante · base: perícias SADT ÷ carga horária mensal informada pelo setor (turnos exibidos apenas como referência)</div>
       <div class="chart-box" style="height:340px"><canvas id="rpGuiasHora"></canvas></div>
-      <div class="insight warn">Apenas <b>Marcela (20,7)</b> atinge a meta de 20 guias/hora em julho — eram 3 peritos em junho. Ana Angélica (18,7), Waneska (17,8) e Carlos (17,4) ficam próximos; Fernando (13,6) e André (14,8) estão mais distantes. <b>Este gráfico considera somente perícias SADT</b>, não a produção somada com reversões, porque a meta é definida em perícias por hora.</div>
+      <div class="insight warn"><b>Carlos (27,58/h)</b>, <b>Ana Angélica (22,80/h)</b>, <b>Gabriel (22,02/h)</b> e <b>Marcela (21,89/h)</b> atingem a meta de 20 guias/hora em julho com a nova metodologia (base mensal). Waneska (18,88/h) fica próxima. <b>Este gráfico considera somente perícias SADT</b>, não a produção somada com reversões, porque a meta é definida em perícias por hora.</div>
     </div>
 
     <div class="section-title"><h2>Produtividade Individual · Portal Prestador</h2><span class="tag">AUTORIZAÇÕES DE CIRURGIAS / PROCEDIMENTOS</span></div>
@@ -487,7 +488,6 @@
         <h3>Perícias de cirurgias / procedimento por perito</h3>
         <div class="desc">Eletivos e urgência — Portal Prestador · Julho</div>
         <div class="chart-box" style="height:420px"><canvas id="rpPortal"></canvas></div>
-        <div class="insight warn">Alexandre Duarte, José Augusto e Roberto Cintra atuam pelo projeto <b>IPESCARDIO</b>, totalizando <b>76 análises</b> em julho — segunda queda consecutiva (120 em maio, 105 em junho, -27,6% no mês). A partir de julho o trio é reportado apenas nesta linha, fora do gráfico do Portal Prestador.</div>
       </div>
       <div class="panel" style="animation-delay:.1s">
         <h3>Média de guias por hora — Portal Prestador</h3>
@@ -495,6 +495,12 @@
         <div id="rpPortalTable" style="margin-top:8px"></div>
         <div class="insight good">Isadora Cardozo (18,07/h) e Caio Flávio (14,82/h) superam a meta médica de 12/h, puxados pelo volume alto mesmo com Caio atuando em fins de semana (25 dias). Allana Dzieciol (14,10/h) também supera a meta. Rayanna (3,29/h) está bem abaixo do esperado apesar de 26 dias de atuação.</div>
       </div>
+    </div>
+    <div class="panel" style="margin-top:18px; animation-delay:.15s">
+      <div class="panel-head"><h3>IPESCARDIO — Histórico de Análises</h3><span class="badge down">-27,6% vs Junho</span></div>
+      <div class="desc">Alexandre Duarte, José Augusto e Roberto Cintra · projeto de análises cardiológicas conduzido por peritos específicos do Portal Prestador, reportado à parte do gráfico principal</div>
+      <div id="rpIpescardioTable" style="margin-top:8px"></div>
+      <div class="insight warn">Total caiu de <b>120 em maio</b> para <b>105 em junho</b> e <b>76 em julho</b> — segunda queda consecutiva (-12,5% e -27,6%). O detalhamento por auditor mostra que <b>Alexandre Duarte puxa a queda</b>, com recuo em todos os três meses (84 → 65 → 40). José Augusto oscilou mais (11 → 27 → 22) e Roberto Cintra se estabilizou depois de uma queda em junho (25 → 13 → 14).</div>
     </div>
     <div class="source-tag" style="margin-top:14px">Dados fornecidos por Vitória Neves de Jesus · Supervisora da Regulação/Perícia Médica</div>
   </section>
@@ -1171,7 +1177,7 @@ const KPIS = {
  'reg-prod':[
   {label:'Guias Periciadas · Jul', value:'10.579', delta:'Média de 481/dia útil', cls:'down', color:'teal', note:'22 dias úteis no mês'},
   {label:'Guias Não Periciadas', value:'1.344', delta:'↑ 77,1% vs Junho (759)', cls:'down', color:'red', note:'Requer priorização imediata'},
-  {label:'Top Perito SADT', value:'1.824', delta:'Ana Angélica Dantas', cls:'up', color:'green', note:'18,7 guias/hora em 15 turnos'},
+  {label:'Top Perito SADT', value:'1.824', delta:'Ana Angélica Dantas', cls:'up', color:'green', note:'22,80 guias/hora (base mensal)'},
   {label:'IPESCARDIO · Análises', value:'76', delta:'-27,6% vs Junho (105)', cls:'down', color:'pink', note:'Alexandre, José Augusto e Roberto'},
   {label:'Produção Total do Setor', value:'12.241', delta:'10.579 perícias + 1.662 reversões', cls:'up', color:'purple', note:'Reversões de cirurgias monitoradas desde Julho'},
  ],
@@ -1303,10 +1309,13 @@ initFns['reg-prod'] = function(){
      {label:'Reversões de cirurgias/procedimentos', data:sadt.map(r=>r[2]), color:COLORS.amber}],
     {lfont:9.5, totalLabel:'Total'});
 
-  const guiasHoraLabels = ['Marcela F. M. Amaral · 6,5h × 13 turnos','Ana Angélica Dantas · 6,5h × 15 turnos','Waneska de Souza Barboza · 5h × 17 turnos',
-    'Carlos Augusto M.S. Filho · 2h × 19 turnos','João Oliveira Deda · 5h × 9 turnos','Gabriel Couto Senra · 4h × 22 turnos',
-    'André Luiz V. M. Araújo · 4h × 22 turnos','Fernando Couto Senra · 4h × 22 turnos'];
-  const guiasHoraData = [20.7,18.7,17.8,17.4,16.6,15.0,14.8,13.6];
+  // A partir de julho/2026, a média de guias/hora passa a usar a CARGA HORÁRIA MENSAL informada
+  // pelo setor (ex.: Marcela 80h/mês), em vez de horas/dia × turnos trabalhados. O turno segue
+  // exibido no rótulo apenas como informação de contexto, sem entrar mais no cálculo.
+  const guiasHoraLabels = ['Carlos Augusto M.S. Filho · 2h/dia - 19 turnos · 24h/mês','Ana Angélica Dantas · 6,5h/dia - 15 turnos · 80h/mês','Gabriel Couto Senra · 4h/dia - 22 turnos · 60h/mês',
+    'Marcela F. M. Amaral · 6,5h/dia - 13 turnos · 80h/mês','Waneska de Souza Barboza · 5h/dia - 17 turnos · 80h/mês','André Luiz V. M. Araújo · 4h/dia - 22 turnos · 80h/mês',
+    'Fernando Couto Senra · 4h/dia - 22 turnos · 80h/mês','João Oliveira Deda · 5h/dia - 9 turnos · 80h/mês'];
+  const guiasHoraData = [27.58,22.80,22.02,21.89,18.88,16.23,15.01,9.31];
   const guiasHoraColors = guiasHoraData.map(v=> v>=20 ? COLORS.green : v>=18 ? COLORS.amber : COLORS.orange);
   hBar('rpGuiasHora', guiasHoraLabels, guiasHoraData, COLORS.blue, {colors:guiasHoraColors, dsize:11, lfont:11});
 
@@ -1326,6 +1335,13 @@ initFns['reg-prod'] = function(){
     {cells:['Mara Caruzo Alves','Enf','4','22','4,10']},
     {cells:['Rayanna Souza Santos','Med','4','26*','<b style="color:var(--amber)">3,29</b>']},
     {cells:['Augusta Maria Dantas Guimaraes','Enf','6','22','1,80']},
+  ]);
+
+  table('rpIpescardioTable', ['Auditor','Maio','Junho','Julho'], [
+    {cells:['Alexandre Duarte Costa','84','65','<b>40</b>']},
+    {cells:['José Augusto Soares Barreto Filho','11','27','<b>22</b>']},
+    {cells:['Roberto Cintra de Azevedo Aragão','25','13','<b>14</b>']},
+    {cells:['<b style="color:var(--text)">Total</b>','<b>120</b>','<b>105</b>','<b style="color:var(--teal)">76</b>'], total:true},
   ]);
 };
 
