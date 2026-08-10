@@ -468,10 +468,10 @@
 
     <div class="section-title"><h2>Produtividade Individual</h2><span class="tag">PERÍCIAS SADT + REVERSÕES DE CIRURGIAS · JULHO</span></div>
     <div class="panel" id="rpProdIndPanel" style="animation-delay:.05s">
-      <div class="panel-head"><h3>Produção total por colaborador</h3><span class="badge">12.241 guias tratadas</span></div>
-      <div class="desc">Médicos, dentista e enfermeiras — soma de <span style="color:var(--blue)">▉</span> perícias SADT e <span style="color:var(--amber)">▉</span> reversões de guias de cirurgias/procedimentos no Benner · total ao final da barra</div>
+      <div class="panel-head"><h3>Produção total por colaborador</h3><span class="badge">10.579 perícias · 1.662 reversões</span></div>
+      <div class="desc">Médicos, dentista e enfermeiras — perícias SADT e reversões de guias de cirurgias/procedimentos no Benner, contabilizadas separadamente · total de cada colaborador ao final da barra</div>
       <div class="chart-box" style="height:460px"><canvas id="rpPericiasSadt"></canvas></div>
-      <div class="insight">Somando as duas atividades, o setor tratou <b>12.241 guias</b> em julho: 10.579 perícias SADT e 1.662 reversões de cirurgias/procedimentos. <b>Dra. Ana Angélica Dantas</b> lidera com 1.850 (1.824 perícias + 26 reversões), seguida de Dra. Marcela com 1.751 e Dr. André Luiz com 1.589.</div>
+      <div class="insight">Em julho, o setor registrou <b>10.579 perícias SADT</b> e <b>1.662 reversões de cirurgias/procedimentos</b> — indicadores tratados de forma independente a partir deste mês, sem soma entre eles. Olhando o volume combinado por colaborador (útil só para ranking individual), <b>Dra. Ana Angélica Dantas</b> lidera com 1.850 (1.824 perícias + 26 reversões), seguida de Dra. Marcela com 1.751 e Dr. André Luiz com 1.589.</div>
       <div class="insight">Duas observações de turno registradas pelo setor: <b>Dr. João Oliveira Deda</b> se ausentou em 8 turnos previstos em julho, já compensados com atuação adicional em maio e junho — o que explica sua produção mais baixa no mês (745). <b>Dra. Ana Angélica Dantas</b> realizou 2 turnos adicionais em julho para compensar 2 turnos que fará em agosto — o que contribui para sua liderança no mês (1.824).</div>
 
     </div>
@@ -524,6 +524,7 @@
         </div>
         <div class="insight good"><b>Crescimento em destaque:</b> Ortopedia (77→111, +44,2%), Colecistectomia (+34,6%) e Colonoscopia/Endoscopia (+28,6%).</div>
         <div class="insight warn"><b>Queda em destaque:</b> Histerectomia Total (32→25, -21,9%) e Programa da Dor (49→46, -6,1%) — as duas únicas do Top 10 em retração.</div>
+        <div class="insight">O Top 10 concentra <b>442 das 753 solicitações</b> (58,7%). As <b>demais especialidades somam 311</b> (41,3%), distribuídas fora do ranking principal.</div>
       </div>
     </div>
 
@@ -860,12 +861,6 @@
       </div>
     </div>
 
-    <div class="section-title"><h2>Hospital Primavera</h2><span class="tag">MAIOR VOLUME DE RECURSOS · JULHO</span></div>
-    <div class="panel" style="animation-delay:.05s">
-      <div id="rrPrimaveraTable" style="margin-top:8px"></div>
-      <div class="insight warn">O volume de contas recua 31,9% (1.690 → 1.151), mas os <b>recursos gerados subiram 70,1%</b> (87 → 148). O índice de retrabalho passa de 5,15% para <b>12,86%</b> — segundo maior volume absoluto de recursos do mês.</div>
-    </div>
-
     <div class="section-title"><h2>Contas por Tipo de Atendimento</h2><span class="tag">JULHO · TOTAL 7.744</span></div>
     <div class="panel" id="rrTipoPanel" style="animation-delay:.05s">
       <div id="rrTipoTable"></div>
@@ -961,6 +956,45 @@ const stackTotalPlugin = {
   }
 };
 Chart.register(stackTotalPlugin);
+
+// custom plugin: draw a total per dataset right below the native legend row
+// (legend.fit is overridden to reserve extra height, then afterDraw paints
+// the totals aligned under each legend item's marker, using its own color)
+const legendTotalsPlugin = {
+  id:'legendTotals',
+  afterInit(chart){
+    const legend = chart.legend;
+    if(!legend || legend.__totalsPatched) return;
+    legend.__totalsPatched = true;
+    const originalFit = legend.fit;
+    legend.fit = function(){
+      originalFit.call(this);
+      const opt = chart.options.plugins && chart.options.plugins.legendTotals;
+      if(opt && opt.show) this.height += 20;
+    };
+  },
+  afterDraw(chart){
+    try{
+      const opt = chart.options.plugins && chart.options.plugins.legendTotals;
+      if(!opt || !opt.show || !Array.isArray(opt.totals)) return;
+      const legend = chart.legend;
+      if(!legend || !legend.legendHitBoxes) return;
+      const {ctx} = chart;
+      ctx.save();
+      ctx.font = '700 11.5px Inter, sans-serif';
+      ctx.textAlign = 'left'; ctx.textBaseline = 'top';
+      legend.legendHitBoxes.forEach((box,i)=>{
+        const t = opt.totals[i];
+        if(t == null) return;
+        const text = typeof t === 'object' ? t.text : String(t);
+        ctx.fillStyle = (typeof t === 'object' && t.color) || '#f2f2f7';
+        ctx.fillText(text, box.left, box.top + box.height + 3);
+      });
+      ctx.restore();
+    }catch(e){ /* fail silently, never break chart rendering */ }
+  }
+};
+Chart.register(legendTotalsPlugin);
 
 // custom plugin: external callout labels with leader line for doughnuts (PowerPoint-style)
 const externalLabelsPlugin = {
@@ -1065,7 +1099,8 @@ function stackedBar(id, labels, datasets, opts={}){
       plugins:{legend:legendTop(), tooltip:{...tooltipBase(), callbacks:{
         title: items=>{ const lbl = items[0]?.label || ''; const cod = codesMap && codesMap[lbl]; return cod ? `${cod} — ${lbl}` : lbl; },
         label:c=>` ${c.dataset.label}: ${valFmt(Number(c.parsed.x)||0)}`
-      }}, stackTotal:{show:true, formatter:valFmt, totalLabel:opts.totalLabel, suffixByIndex:opts.suffixByIndex}},
+      }}, stackTotal:{show:true, formatter:valFmt, totalLabel:opts.totalLabel, suffixByIndex:opts.suffixByIndex},
+      legendTotals: opts.legendTotals ? {show:true, totals:opts.legendTotals} : {show:false}},
       scales:{x:{stacked:true, grid:{color:COLORS.grid}, suggestedMax: needsRoom ? maxTotal*1.4 : undefined, ticks:{font:{size:11}, callback:v=>opts.money?fmtMoneyShort(v):String(v)}}, y:{stacked:true, grid:{display:false}, ticks:{font:{size:opts.lfont||11},
         color: opts.labelColors ? (ctx=>opts.labelColors[ctx.index] || '#8f8f9e') : '#8f8f9e'}}}}
   });
@@ -1179,7 +1214,7 @@ const KPIS = {
   {label:'Guias Não Periciadas', value:'1.344', delta:'↑ 77,1% vs Junho (759)', cls:'down', color:'red', note:'Requer priorização imediata'},
   {label:'Top Perito SADT', value:'1.824', delta:'Ana Angélica Dantas', cls:'up', color:'green', note:'22,80 guias/hora (base mensal)'},
   {label:'IPESCARDIO · Análises', value:'76', delta:'-27,6% vs Junho (105)', cls:'down', color:'pink', note:'Alexandre, José Augusto e Roberto'},
-  {label:'Produção Total do Setor', value:'12.241', delta:'10.579 perícias + 1.662 reversões', cls:'up', color:'purple', note:'Reversões de cirurgias monitoradas desde Julho'},
+  {label:'Total Portal Prestador', value:'6.482', delta:'Isadora Cardozo Roza lidera (1.590)', cls:'up', color:'teal', note:'13 peritos ativos · eletivos e urgência'},
  ],
  'reg-des':[
   {label:'Solicitações Eletivas · Jul', value:'753', delta:'+23,4% vs Junho (610)', cls:'up', color:'teal', note:'Central de Autorizações'},
@@ -1196,7 +1231,7 @@ const KPIS = {
   {label:'Tomografia · Jul', value:'226', delta:'-10,7% vs Junho (253)', cls:'down', color:'teal', note:'Fundação lidera com 91'},
  ],
  'con-prod':[
-  {label:'Total de Internados · Jul', value:'609', delta:'528 elegíveis (>3 dias)', cls:'neutral', color:'teal', note:'Auditoria concorrente'},
+  {label:'Total de Internados · Jul', value:'609', delta:'528 elegíveis (>3 dias) · 86,7%', cls:'neutral', color:'teal', note:'Auditoria concorrente'},
   {label:'Visitas Realizadas · Jul', value:'1.413', delta:'2,64 visitas/paciente elegível', cls:'up', color:'blue', note:'Recorde do ano · +14,9% vs Junho'},
   {label:'Melhor Cobertura', value:'4,59', delta:'Hospital do Coração', cls:'up', color:'green', note:'Visitas por paciente elegível'},
   {label:'Menor Cobertura', value:'2,19', delta:'Hospital Renascença', cls:'down', color:'amber', note:'Visitas por paciente elegível'},
@@ -1685,13 +1720,6 @@ initFns['retro-prod'] = function(){
     [{label:'Junho', data:[72,211,148], color:'rgba(61,220,132,0.35)'}, {label:'Julho', data:[184,280,193], color:COLORS.green}], {horizontal:true, dsize:10});
   groupedBar('rrTopDrop', ['San Giovanni','Oncohematos','Vitta'],
     [{label:'Junho', data:[178,209,386], color:'rgba(242,73,92,0.35)'}, {label:'Julho', data:[51,95,190], color:COLORS.red}], {horizontal:true, dsize:10});
-
-  const primaveraData = [['Contas apresentadas',897,1690,1151],['Recursos gerados',null,87,148]];
-  table('rrPrimaveraTable', ['Métrica','Maio','Junho','Julho','Variação (Jun→Jul)'], primaveraData.map(([nome,mai,jun,jul])=>{
-    const pct = jun ? ((jul-jun)/jun*100) : null;
-    const vs = pct===null ? '—' : (pct>=0?'+':'') + pct.toFixed(1).replace('.',',') + '%';
-    return {cells:[`<b style="color:var(--text)">${nome}</b>`, mai===null?'—':fmt(mai), fmt(jun), `<b>${fmt(jul)}</b>`, vspan(vs)], alert: nome==='Recursos gerados'};
-  }));
 
   table('rrTipoTable', ['Tipo de Atendimento','Junho','Julho','Variação'], [
     {cells:['Pronto Atendimento - Urgência','3.039','<b>2.572</b>', vspan('-15,4%')]},
