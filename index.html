@@ -89,6 +89,11 @@
   .tab-btn.active{background:var(--card-hover); border-color:var(--teal); color:var(--text); box-shadow:0 0 0 1px rgba(45,217,195,0.25), 0 8px 24px rgba(45,217,195,0.08);}
   .tab-btn.active .tdot{background:var(--teal); box-shadow:0 0 8px var(--teal);}
 
+  .mini-toggle{display:flex; gap:6px;}
+  .mini-toggle button{background:var(--card); border:1px solid var(--border); color:var(--text-dim); padding:5px 12px; border-radius:8px; font-size:11px; font-weight:700; cursor:pointer; transition:all .2s ease; letter-spacing:.2px;}
+  .mini-toggle button:hover{border-color:rgba(255,255,255,0.18); color:var(--text);}
+  .mini-toggle button.active{background:var(--card-hover); border-color:var(--teal); color:var(--text); box-shadow:0 0 0 1px rgba(45,217,195,0.25);}
+
   .kpi-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(226px,1fr)); gap:16px; margin-bottom:34px;}
   .kpi{background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:20px 20px 18px; position:relative; overflow:hidden; transition:transform .25s ease, border-color .25s ease, background .25s ease; opacity:0; animation:fadeUp .5s ease forwards;}
   .kpi:hover{transform:translateY(-3px); border-color:rgba(255,255,255,0.16); background:var(--card-hover);}
@@ -791,8 +796,34 @@
     <div class="section-title"><h2>Contas por Enfermeiro Auditor</h2><span class="tag">14 AUDITORES · JULHO</span></div>
     <div class="grid-2">
       <div class="panel" style="animation-delay:.05s">
-        <h3>Total no período</h3>
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap">
+          <h3>Total no período</h3>
+          <div class="mini-toggle">
+            <button id="rrAudBrutoBtn" class="active">Bruto</button>
+            <button id="rrAudPonderadoBtn">Ponderado</button>
+          </div>
+        </div>
         <div class="chart-box" style="height:360px"><canvas id="rrAuditorTotal"></canvas></div>
+        <div class="insight" id="rrAuditorInsight" style="margin-top:8px">Ranking por volume bruto de contas, sem ajuste de peso. <b>Marília</b> lidera com 1.274 contas no período.</div>
+        <details class="med-detail" style="margin-top:8px">
+          <summary>Ver tabela de peso por tipo de conta</summary>
+          <div class="items">
+            <table style="width:100%; border-collapse:collapse; font-size:11.5px;">
+              <thead><tr style="color:var(--text-faint); text-align:left"><th style="padding:2px 6px 4px 0; font-weight:600">Tipo de conta</th><th style="padding:2px 6px 4px; font-weight:600">Peso</th><th style="padding:2px 0 4px; font-weight:600">Tempo médio</th></tr></thead>
+              <tbody>
+                <tr><td style="padding:2px 6px 2px 0">Internamento</td><td style="padding:2px 6px">5</td><td style="padding:2px 0">30 min</td></tr>
+                <tr><td style="padding:2px 6px 2px 0">Home Care - ID</td><td style="padding:2px 6px">4</td><td style="padding:2px 0">20 min</td></tr>
+                <tr><td style="padding:2px 6px 2px 0">Oncologia</td><td style="padding:2px 6px">3</td><td style="padding:2px 0">15 min</td></tr>
+                <tr><td style="padding:2px 6px 2px 0">Home Care - AD</td><td style="padding:2px 6px">2</td><td style="padding:2px 0">10 min</td></tr>
+                <tr><td style="padding:2px 6px 2px 0">Home Care - Gerenciamento</td><td style="padding:2px 6px">2</td><td style="padding:2px 0">10 min</td></tr>
+                <tr><td style="padding:2px 6px 2px 0">Home Care - Hospitalar</td><td style="padding:2px 6px">1</td><td style="padding:2px 0">4 min</td></tr>
+                <tr><td style="padding:2px 6px 2px 0">Home Care - Remoção</td><td style="padding:2px 6px">1</td><td style="padding:2px 0">4 min</td></tr>
+                <tr><td style="padding:2px 6px 2px 0">Pronto Atendimento</td><td style="padding:2px 6px">1</td><td style="padding:2px 0">4 min</td></tr>
+                <tr><td style="padding:2px 6px 2px 0">SADT</td><td style="padding:2px 6px">1</td><td style="padding:2px 0">4 min</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </details>
       </div>
       <div class="panel" style="animation-delay:.1s">
         <h3>Evolução mensal</h3>
@@ -1010,7 +1041,7 @@ function stackedBar(id, labels, datasets, opts={}){
   const valFmt = opts.money ? fmtMoneyShort : fmt;
   const totals = labels.map((_,i)=> datasets.reduce((sum,ds)=> sum + (Number(ds.data[i])||0), 0));
   const maxTotal = Math.max(...totals, 0);
-  const needsRoom = opts.totalLabel || opts.suffixByIndex;
+  const needsRoom = opts.totalLabel || opts.suffixByIndex || opts.extraRoom;
   // opts.codes: mapa opcional {nome do procedimento: código}. Quando informado, o código aparece
   // apenas no tooltip (hover sobre a barra), sem poluir o rótulo do eixo Y.
   const codesMap = opts.codes || null;
@@ -1661,16 +1692,58 @@ initFns['retro-prod'] = function(){
     {cells:['Internamento Day Psiquiátrico','24','<b>—</b>','<span style="color:var(--text-faint)">sem registro</span>']},
     {cells:['<b style="color:var(--text)">Total Geral</b>','<b>9.601</b>','<b style="color:var(--teal)">7.744</b>', vspan('-19,3%')], total:true}]);
 
-  const auditoresTotal = [['Marilia',1274],["Maria D'Coeli",1024],['Mônica',914],['Michelle',701],['Luciana',624],
-    ['Ana Fátima',614],['Inessa',575],['Ronaide',500],['Mara',438],['Clarissa',365],['Genisete',303],['Marise',267],['Tayná',118],['Renata',27]];
-  hBar('rrAuditorTotal', auditoresTotal.map(r=>r[0]), auditoresTotal.map(r=>r[1]), COLORS.blue, {dsize:9.5});
+  // Peso por tipo de conta (Retrospectiva) — equaliza a produtividade entre auditores, já que
+  // tipos diferentes de conta demandam tempos de auditoria muito diferentes (definido com o setor,
+  // com base no tempo médio por conta). Carga horária individual ainda não disponível — em análise
+  // com a coordenação; por ora a pontuação ponderada é um índice relativo, não uma taxa por hora.
+  const PESO_TIPO = {'Internamento':5, 'Home Care- ID':4, 'Oncologia':3, 'Home Care- AD':2, 'Home Care- Gerenciamento':2,
+    'Home Care- Hospitalar':1, 'Home Care- Remoção':1, 'Pronto Atendimento':1, 'SADT':1};
+  // Contas por auditor(a), por tipo de conta — julho/2026 (fonte: Contas por Auditor / Enfermeiro Auditor).
+  const auditoresPorTipo = {
+    'Marilia': {'Internamento':69, 'Pronto Atendimento':773, 'SADT':432},
+    "Maria D'Coeli": {'Internamento':112, 'Pronto Atendimento':785, 'SADT':127},
+    'Mônica': {'Home Care- AD':1, 'Home Care- ID':10, 'Internamento':68, 'Pronto Atendimento':743, 'SADT':92},
+    'Michelle': {'Internamento':116, 'Oncologia':425, 'SADT':160},
+    'Luciana': {'Internamento':106, 'Oncologia':66, 'SADT':452},
+    'Ana Fátima': {'Home Care- ID':21, 'Home Care- Remoção':92, 'Internamento':233, 'Pronto Atendimento':268},
+    'Inessa': {'Internamento':80, 'Oncologia':58, 'Pronto Atendimento':1, 'SADT':436},
+    'Ronaide': {'Oncologia':500},
+    'Mara': {'Home Care- AD':2, 'Home Care- Gerenciamento':13, 'Home Care- Hospitalar':365, 'Home Care- ID':26, 'Home Care- Remoção':32},
+    'Clarissa': {'Internamento':193, 'Oncologia':159, 'Pronto Atendimento':2, 'SADT':11},
+    'Genisete': {'Internamento':303},
+    'Marise': {'Internamento':267},
+    'Tayná': {'SADT':118},
+    'Renata': {'Internamento':10, 'Oncologia':17}
+  };
+  const auditoresTotal = Object.keys(auditoresPorTipo).map(nome =>
+    [nome, Object.values(auditoresPorTipo[nome]).reduce((a,b)=>a+b,0)]);
+  const auditoresPonderado = Object.keys(auditoresPorTipo).map(nome =>
+    [nome, Object.entries(auditoresPorTipo[nome]).reduce((s,[t,q])=> s + q*(PESO_TIPO[t]||0), 0)]);
+
+  const rrAuditorChart = hBar('rrAuditorTotal', auditoresTotal.map(r=>r[0]), auditoresTotal.map(r=>r[1]), COLORS.blue, {dsize:9.5});
+
+  function renderAuditorChart(mode){
+    const src = (mode === 'ponderado') ? auditoresPonderado : auditoresTotal;
+    const sorted = [...src].sort((a,b)=> b[1]-a[1]);
+    rrAuditorChart.data.labels = sorted.map(r=>r[0]);
+    rrAuditorChart.data.datasets[0].data = sorted.map(r=>r[1]);
+    rrAuditorChart.data.datasets[0].backgroundColor = (mode === 'ponderado') ? COLORS.teal : COLORS.blue;
+    rrAuditorChart.update();
+    document.getElementById('rrAudBrutoBtn').classList.toggle('active', mode !== 'ponderado');
+    document.getElementById('rrAudPonderadoBtn').classList.toggle('active', mode === 'ponderado');
+    document.getElementById('rrAuditorInsight').innerHTML = (mode === 'ponderado')
+      ? 'Pontuação ponderada = soma de (quantidade × peso do tipo de conta), peso definido pelo setor conforme a complexidade/tempo médio de cada tipo. <b>Michelle</b> assume a liderança mesmo com menos contas brutas, por concentrar volume em Oncologia (peso 3) e Internamento (peso 5).'
+      : 'Ranking por volume bruto de contas, sem ajuste de peso. <b>Marília</b> lidera com 1.274 contas no período.';
+  }
+  document.getElementById('rrAudBrutoBtn').addEventListener('click', ()=> renderAuditorChart('bruto'));
+  document.getElementById('rrAudPonderadoBtn').addEventListener('click', ()=> renderAuditorChart('ponderado'));
 
   const am = [['Marilia',1728,1484,1274],["Maria D'Coeli",1515,1386,1024],['Mônica',1330,1357,914],['Michelle',364,676,701],
     ['Luciana',474,931,624],['Ana Fátima',562,620,614],['Inessa',476,809,575],['Ronaide',450,829,500],['Mara',698,431,438],
     ['Clarissa',331,365,365],['Genisete',2270,256,303],['Marise',255,246,267],['Tayná',0,0,118],['Renata',302,211,27]];
   stackedBar('rrAuditorMensal', am.map(r=>r[0]),
     [{label:'Maio', data:am.map(r=>r[1]), color:COLORS.m1}, {label:'Junho', data:am.map(r=>r[2]), color:COLORS.m2}, {label:'Julho', data:am.map(r=>r[3]), color:COLORS.m3}],
-    {lfont:9.5});
+    {lfont:9.5, extraRoom:true});
 
   const rec = [['Hospital do Coração',112,80,'71,43%',true],['Onco Brasil',108,27,'25,00%',true],['Hospital São Lucas',280,47,'16,79%',true],
     ['Hospital Primavera',1151,148,'12,86%',true],['Decós',276,34,'12,32%',false],['Hospital Cirurgia',303,36,'11,88%',false],
