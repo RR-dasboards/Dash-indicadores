@@ -235,6 +235,7 @@
   #toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
   #toast b{color:var(--teal);}
   footer{margin-top:50px; text-align:center; font-size:11.5px; color:var(--text-faint); padding-top:22px; border-top:1px solid var(--border-soft);}
+  .kpi-print{display:none;}
   .theme-section{display:none;}
   .theme-section.active{display:block; animation:fadeUp .4s ease;}
 
@@ -285,7 +286,117 @@
     .kpi-grid{grid-template-columns:1fr;}
     table{min-width:460px;}
 
-  @page{ size:landscape; margin:10mm 9mm; }
+  /* =========================================================================
+     EXPORTACAO EM PDF — A4 PAISAGEM
+     Area util: 297x210mm menos as margens de 9mm/8mm = 281x192mm (~1062x725px).
+     Todas as medidas abaixo foram calibradas nessa altura para que os paineis
+     fechem 2 por pagina (ou 1, nos graficos altos), sem sobra de meia pagina
+     e sem card cortado no meio.
+
+     O bloco de geometria aparece DUAS vezes, de proposito:
+       1) em html.print-mode  -> aplicado por JS ANTES de chamar window.print().
+          O Chrome dispara o evento beforeprint ANTES de recalcular o layout de
+          impressao, entao redimensionar os graficos ali dentro pegava as
+          medidas da tela. Com a classe, a pagina passa a ter a largura do papel
+          ainda na tela, os canvases sao redimensionados com o tamanho certo e
+          so depois a impressao acontece.
+       2) em @media print     -> rede de seguranca, caso o JS nao rode ou o
+          usuario use Ctrl+P por outro caminho.
+     Ao mexer em uma das copias, mexa na outra. As duas sao geradas do mesmo
+     template, entao devem permanecer identicas linha a linha.
+     ========================================================================= */
+  @page{ size:A4 landscape; margin:9mm 8mm; }
+
+  /* --- copia 1: aplicada na tela, logo antes de imprimir ------------------ */
+  html.print-mode{ background:var(--bg); }
+  html.print-mode body{ font-size:13px; }
+  html.print-mode .wrap{ width:1062px; max-width:1062px; margin:0 auto; }
+  html.print-mode .tabs,
+  html.print-mode #toast,
+  html.print-mode .floating-logo-rr,
+  html.print-mode .pulse-line{ display:none !important; }
+  html.print-mode .theme-section{ display:block !important; }
+
+    /* --- cabecalho ------------------------------------------------------ */
+    html.print-mode .wrap{ padding:0 2px; }
+    html.print-mode header{ padding:14px 20px; margin-bottom:10px; animation:none; opacity:1; }
+    html.print-mode header h1{ font-size:25px; margin-bottom:5px; }
+    html.print-mode header p.sub{ font-size:12.5px; }
+    html.print-mode .header-meta{ gap:6px; margin-top:9px; }
+    html.print-mode .meta-period{ font-size:14px; }
+    html.print-mode .meta-authors .author-line{ font-size:11px; line-height:1.42; }
+    html.print-mode .meta-authors .initiative-line{ font-size:10.5px; }
+    html.print-mode .report-timestamp{ margin-top:5px; }
+    html.print-mode .header-logos img.logo-rr{ height:38px; }
+    html.print-mode .header-logos img.logo-ipes{ height:33px; }
+
+    /* --- KPIs: os 5 cards do tema em UMA linha unica --------------------- */
+    html.print-mode #kpiGrid{ display:none !important; }
+    html.print-mode .kpi-print{ display:grid !important; }
+    html.print-mode .kpi-grid{ grid-template-columns:repeat(5,1fr); gap:9px; margin-bottom:12px; }
+    html.print-mode .kpi{ padding:9px 11px 9px; border-radius:11px; animation:none !important; opacity:1 !important; }
+    html.print-mode .kpi-label{ font-size:9.5px; margin-bottom:6px; letter-spacing:.6px; }
+    html.print-mode .kpi-value{ font-size:19px; margin-bottom:4px; }
+    html.print-mode .kpi-delta{ font-size:10.2px; }
+    html.print-mode .kpi-note{ font-size:9.4px; margin-top:4px; line-height:1.35; }
+
+    /* --- COLUNAS: a correcao central ------------------------------------ *
+     * Sem estas linhas, a media query de 960px do layout responsivo entra
+     * em acao na impressao e derruba TODOS os grids para 1 coluna: os tres
+     * donuts Mai/Jun/Jul viram tres blocos gigantes quase vazios e os pares
+     * de paineis deixam de ficar lado a lado. Em paisagem cabem 2-3 colunas
+     * com folga, entao aqui elas sao reafirmadas explicitamente.            */
+    html.print-mode .grid-2{ grid-template-columns:1.4fr 1fr; gap:12px; }
+    html.print-mode .grid-2b{ grid-template-columns:1fr 1fr; gap:12px; }
+    html.print-mode .grid-3{ grid-template-columns:repeat(3,1fr); gap:12px; }
+    html.print-mode .grid-4{ grid-template-columns:repeat(4,1fr); gap:10px; }
+    html.print-mode .person-grid{ grid-template-columns:repeat(3,1fr); gap:10px; }
+    html.print-mode .glossary-grid{ grid-template-columns:1fr 1fr; gap:8px 20px; }
+    html.print-mode .stat-strip{ grid-template-columns:repeat(4,1fr); gap:9px; margin-bottom:11px; }
+    html.print-mode .stat-box{ padding:9px 12px; }
+    html.print-mode .stat-box .n{ font-size:18px; }
+    html.print-mode .stat-box .l{ font-size:9.5px; }
+
+    /* --- densidade dos cards -------------------------------------------- */
+    html.print-mode .section-title{ margin:12px 0 7px; }
+    html.print-mode .section-title h2{ font-size:15.5px; }
+    html.print-mode .panel{ padding:13px 15px 11px; border-radius:12px; animation:none !important; opacity:1 !important; }
+    html.print-mode .panel h3{ font-size:13px; }
+    html.print-mode .panel .desc{ font-size:10.5px; margin-bottom:8px; }
+    html.print-mode .insight{ margin-top:7px; padding:7px 10px; font-size:10.8px; line-height:1.45; }
+    html.print-mode .source-tag{ margin-top:7px; }
+    html.print-mode .hl-card{ padding:10px 12px; }
+    html.print-mode .hl-row{ padding:5px 0; font-size:11px; }
+    html.print-mode table{ font-size:10.2px; }
+    html.print-mode th{ padding:5px 7px; font-size:8.8px; }
+    html.print-mode td{ padding:5px 7px; }
+    html.print-mode .glossary-box{ padding:12px 16px; margin-top:14px; }
+    html.print-mode .med-detail .items, html.print-mode .med-detail summary{ font-size:10px; }
+
+    /* --- alturas de grafico calibradas nos 192mm uteis da pagina --------- *
+     * Precisam de !important porque a altura original vem em style inline.  */
+    html.print-mode .chart-box[style*="height:230px"]{ height:172px !important; }
+    html.print-mode .chart-box[style*="height:260px"]{ height:196px !important; }
+    html.print-mode .chart-box[style*="height:270px"]{ height:200px !important; }
+    html.print-mode .chart-box[style*="height:280px"]{ height:206px !important; }
+    html.print-mode .chart-box[style*="height:300px"]{ height:214px !important; }
+    html.print-mode .chart-box[style*="height:320px"]{ height:226px !important; }
+    html.print-mode .chart-box[style*="height:340px"]{ height:238px !important; }
+    html.print-mode .chart-box[style*="height:360px"]{ height:250px !important; }
+    html.print-mode .chart-box[style*="height:420px"]{ height:300px !important; }
+    html.print-mode .chart-box[style*="height:460px"]{ height:392px !important; }
+    html.print-mode .chart-box[style*="height:560px"]{ height:380px !important; }
+
+    /* --- o canvas sempre preenche o card -------------------------------- *
+     * O Chart.js grava a largura do canvas em pixels da TELA. Na impressao
+     * a pagina tem outra largura e o canvas ficava encostado a esquerda,
+     * com uma faixa morta a direita. Aqui ele e forcado a ocupar a caixa
+     * inteira; o redimensionamento em JS (print-mode) ja deixa a proporcao
+     * praticamente correta, entao isto so absorve a diferenca residual.     */
+    html.print-mode .chart-box > canvas{ width:100% !important; height:100% !important; }
+
+
+  /* --- copia 2: rede de seguranca no @media print ------------------------- */
   @media print {
     *{ -webkit-print-color-adjust:exact !important; print-color-adjust:exact !important; color-adjust:exact !important; }
     html, body{ background:var(--bg) !important; }
@@ -296,45 +407,116 @@
         var(--bg) !important;
       font-size:13px;
     }
-    .wrap{ max-width:100%; padding:6px 8px 30px; background:var(--bg) !important; }
+    .wrap{ width:auto !important; max-width:none !important; background:var(--bg) !important; }
     .tabs, #exportPdfBtn, #toast, .floating-logo-rr, .pulse-line{ display:none !important; }
 
-    header{ padding:22px 26px; margin-bottom:16px; }
+    /* --- cabecalho ------------------------------------------------------ */
+    .wrap{ padding:0 2px; }
+    header{ padding:14px 20px; margin-bottom:10px; animation:none; opacity:1; }
+    header h1{ font-size:25px; margin-bottom:5px; }
+    header p.sub{ font-size:12.5px; }
+    .header-meta{ gap:6px; margin-top:9px; }
+    .meta-period{ font-size:14px; }
+    .meta-authors .author-line{ font-size:11px; line-height:1.42; }
+    .meta-authors .initiative-line{ font-size:10.5px; }
+    .report-timestamp{ margin-top:5px; }
+    .header-logos img.logo-rr{ height:38px; }
+    .header-logos img.logo-ipes{ height:33px; }
 
+    /* --- KPIs: os 5 cards do tema em UMA linha unica --------------------- */
+    #kpiGrid{ display:none !important; }
+    .kpi-print{ display:grid !important; }
+    .kpi-grid{ grid-template-columns:repeat(5,1fr); gap:9px; margin-bottom:12px; }
+    .kpi{ padding:9px 11px 9px; border-radius:11px; animation:none !important; opacity:1 !important; }
+    .kpi-label{ font-size:9.5px; margin-bottom:6px; letter-spacing:.6px; }
+    .kpi-value{ font-size:19px; margin-bottom:4px; }
+    .kpi-delta{ font-size:10.2px; }
+    .kpi-note{ font-size:9.4px; margin-top:4px; line-height:1.35; }
+
+    /* --- COLUNAS: a correcao central ------------------------------------ *
+     * Sem estas linhas, a media query de 960px do layout responsivo entra
+     * em acao na impressao e derruba TODOS os grids para 1 coluna: os tres
+     * donuts Mai/Jun/Jul viram tres blocos gigantes quase vazios e os pares
+     * de paineis deixam de ficar lado a lado. Em paisagem cabem 2-3 colunas
+     * com folga, entao aqui elas sao reafirmadas explicitamente.            */
+    .grid-2{ grid-template-columns:1.4fr 1fr; gap:12px; }
+    .grid-2b{ grid-template-columns:1fr 1fr; gap:12px; }
+    .grid-3{ grid-template-columns:repeat(3,1fr); gap:12px; }
+    .grid-4{ grid-template-columns:repeat(4,1fr); gap:10px; }
+    .person-grid{ grid-template-columns:repeat(3,1fr); gap:10px; }
+    .glossary-grid{ grid-template-columns:1fr 1fr; gap:8px 20px; }
+    .stat-strip{ grid-template-columns:repeat(4,1fr); gap:9px; margin-bottom:11px; }
+    .stat-box{ padding:9px 12px; }
+    .stat-box .n{ font-size:18px; }
+    .stat-box .l{ font-size:9.5px; }
+
+    /* --- densidade dos cards -------------------------------------------- */
+    .section-title{ margin:12px 0 7px; }
+    .section-title h2{ font-size:15.5px; }
+    .panel{ padding:13px 15px 11px; border-radius:12px; animation:none !important; opacity:1 !important; }
+    .panel h3{ font-size:13px; }
+    .panel .desc{ font-size:10.5px; margin-bottom:8px; }
+    .insight{ margin-top:7px; padding:7px 10px; font-size:10.8px; line-height:1.45; }
+    .source-tag{ margin-top:7px; }
+    .hl-card{ padding:10px 12px; }
+    .hl-row{ padding:5px 0; font-size:11px; }
+    table{ font-size:10.2px; }
+    th{ padding:5px 7px; font-size:8.8px; }
+    td{ padding:5px 7px; }
+    .glossary-box{ padding:12px 16px; margin-top:14px; }
+    .med-detail .items, .med-detail summary{ font-size:10px; }
+
+    /* --- alturas de grafico calibradas nos 192mm uteis da pagina --------- *
+     * Precisam de !important porque a altura original vem em style inline.  */
+    .chart-box[style*="height:230px"]{ height:172px !important; }
+    .chart-box[style*="height:260px"]{ height:196px !important; }
+    .chart-box[style*="height:270px"]{ height:200px !important; }
+    .chart-box[style*="height:280px"]{ height:206px !important; }
+    .chart-box[style*="height:300px"]{ height:214px !important; }
+    .chart-box[style*="height:320px"]{ height:226px !important; }
+    .chart-box[style*="height:340px"]{ height:238px !important; }
+    .chart-box[style*="height:360px"]{ height:250px !important; }
+    .chart-box[style*="height:420px"]{ height:300px !important; }
+    .chart-box[style*="height:460px"]{ height:392px !important; }
+    .chart-box[style*="height:560px"]{ height:380px !important; }
+
+    /* --- o canvas sempre preenche o card -------------------------------- *
+     * O Chart.js grava a largura do canvas em pixels da TELA. Na impressao
+     * a pagina tem outra largura e o canvas ficava encostado a esquerda,
+     * com uma faixa morta a direita. Aqui ele e forcado a ocupar a caixa
+     * inteira; o redimensionamento em JS (print-mode) ja deixa a proporcao
+     * praticamente correta, entao isto so absorve a diferenca residual.     */
+    .chart-box > canvas{ width:100% !important; height:100% !important; }
+
+
+    /* --- quebras de pagina ---------------------------------------------- */
     .theme-section{ display:none !important; }
     .theme-section.active{ display:block !important; page-break-before:always; break-before:page; background:var(--bg) !important; }
     #section-overview.active{ page-break-before:auto; break-before:auto; }
+    .theme-section.active > *:first-child{ page-break-before:avoid; break-before:avoid; }
 
-    /* Mantém os grids na coluna original (2 ou 3): a largura da página em
-       paisagem (@page acima) já comporta 2-3 painéis lado a lado, então
-       empilhar tudo em 1 coluna só desperdiçaria espaço. IMPORTANTE: .grid-3
-       também é reaproveitada para os 3 mini-donuts MAIO/JUNHO/JULHO dentro
-       de um único painel — forçar 1 coluna ali quebrava esse bloco em 3
-       "fatias" enormes e vazias, então não mexemos no template de colunas. */
-
-    /* Blocos que devem permanecer inteiros numa mesma página, nunca cortados ao meio */
+    /* Blocos que nao podem ser cortados ao meio */
     .kpi-grid, .hl-grid, .stat-strip, .person-grid, .glossary-grid{ page-break-inside:avoid; break-inside:avoid; }
     .panel, .kpi, .hl-card, .person-card, .stat-box{ page-break-inside:avoid; break-inside:avoid; }
 
-    /* Evita título de seção "órfão" sozinho no fim da página, sem o conteúdo abaixo */
+    /* So a tabela LONGA pode fluir entre paginas (classe aplicada por JS, ver
+       enterPrintMode). As linhas nunca sao cortadas e o cabecalho se repete.
+       Painel curto continua inteiro: quebrar um card de 3 linhas so deixava um
+       "rabicho" sozinho no alto da pagina seguinte. */
+    .panel.panel-split{ page-break-inside:auto; break-inside:auto; }
+
+    /* Titulo de secao nunca fica orfao no pe da pagina */
     .section-title{ page-break-after:avoid; break-after:avoid-page; }
 
-    /* Os únicos gráficos altos o bastante para não caber com folga numa página
-       em paisagem são os dois de 560px (Volume Detalhado · Eletivos/Urgência,
-       lado a lado). Reduzir um pouco a altura deles dá margem para o título,
-       descrição e insight caberem na mesma página sem cortar o gráfico. */
-    .chart-box[style*="height:560px"]{ height:480px !important; }
-
-    /* Tabelas longas podem quebrar entre páginas, mas repetindo o cabeçalho
-       e sem cortar uma linha ao meio */
-    table{ font-size:11px; }
     thead{ display:table-header-group; }
     tfoot{ display:table-footer-group; }
     tr{ page-break-inside:avoid; break-inside:avoid; }
-
-    header{ animation:none; opacity:1; }
-    .kpi, .panel{ animation:none !important; opacity:1 !important; }
+    /* A linha de credito da fonte nunca pode cair sozinha numa pagina — era
+       exatamente isso que produzia a pagina "em branco" no meio do PDF. */
+    .source-tag{ page-break-before:avoid; break-before:avoid; }
+    footer{ page-break-before:avoid; break-before:avoid; margin-top:18px; }
     .row-alert td{ animation:none !important; }
+
   }
 </style>
 </head>
@@ -1097,7 +1279,7 @@ function hBar(id, labels, data, color, opts={}){
     data:{labels, datasets:[{data, backgroundColor: opts.colors||color, borderRadius:5, barPercentage:0.7}]},
     options:{indexAxis:'y', responsive:true, maintainAspectRatio:false,
       plugins:{legend:{display:false}, tooltip:tooltipBase(), datalabels:dLabel({size:opts.dsize||10})},
-      scales:{x:{grid:{color:COLORS.grid}, ticks:{font:{size:11}}}, y:{grid:{display:false}, ticks:{font:{size:opts.lfont||10.5}}}}}
+      scales:{x:{grid:{color:COLORS.grid}, ticks:{font:{size:11}}}, y:{grid:{display:false}, ticks:{autoSkip:false, font:{size:opts.lfont||10.5}}}}}
   });
 }
 function groupedBar(id, labels, datasets, opts={}){
@@ -1111,7 +1293,7 @@ function groupedBar(id, labels, datasets, opts={}){
         tooltip:{...tooltipBase(), callbacks:{label:c=>` ${c.dataset.label}: ${valFmt(Number(horizontal?c.parsed.x:c.parsed.y)||0)}`}},
         datalabels:dLabel({size:opts.dsize||9, align: horizontal?'end':'end', anchor:'end', formatter:v=>valFmt(Number(v)||0)})},
       scales: horizontal ?
-        {x:{grid:{color:COLORS.grid}, ticks:{font:{size:11}, callback:v=>opts.money?fmtMoneyShort(v):String(v)}}, y:{grid:{display:false}, ticks:{font:{size:opts.lfont||10.5}}}} :
+        {x:{grid:{color:COLORS.grid}, ticks:{font:{size:11}, callback:v=>opts.money?fmtMoneyShort(v):String(v)}}, y:{grid:{display:false}, ticks:{autoSkip:false, font:{size:opts.lfont||10.5}}}} :
         {x:{grid:{display:false}, ticks:{font:{size:opts.lfont||10.5}}}, y:{grid:{color:COLORS.grid}, ticks:{font:{size:11}, callback:v=>opts.money?fmtMoneyShort(v):String(v)}}}}
   });
 }
@@ -1132,7 +1314,7 @@ function stackedBar(id, labels, datasets, opts={}){
         label:c=>` ${c.dataset.label}: ${valFmt(Number(c.parsed.x)||0)}`
       }}, stackTotal:{show:true, formatter:valFmt, totalLabel:opts.totalLabel, suffixByIndex:opts.suffixByIndex},
       legendTotals: opts.legendTotals ? {show:true, totals:opts.legendTotals} : {show:false}},
-      scales:{x:{stacked:true, grid:{color:COLORS.grid}, suggestedMax: needsRoom ? maxTotal*1.4 : undefined, ticks:{font:{size:11}, callback:v=>opts.money?fmtMoneyShort(v):String(v)}}, y:{stacked:true, grid:{display:false}, ticks:{font:{size:opts.lfont||11},
+      scales:{x:{stacked:true, grid:{color:COLORS.grid}, suggestedMax: needsRoom ? maxTotal*1.4 : undefined, ticks:{font:{size:11}, callback:v=>opts.money?fmtMoneyShort(v):String(v)}}, y:{stacked:true, grid:{display:false}, ticks:{autoSkip:false, font:{size:opts.lfont||11},
         color: opts.labelColors ? (ctx=>opts.labelColors[ctx.index] || '#8f8f9e') : '#8f8f9e'}}}}
   });
 }
@@ -1966,41 +2148,225 @@ if (window.visualViewport) {
 }
 
 /* =========================================================================
-   EXPORTAÇÃO EM PDF
+   MODO DE IMPRESSAO
    ========================================================================= */
-let __preprintTheme = null;
-function exportPdf(){
-  __preprintTheme = themes.find(t=> document.getElementById('section-'+t).classList.contains('active')) || 'overview';
-  themes.forEach(t=>{
+/* Um KPI grid proprio dentro de cada aba. Antes existia um unico #kpiGrid
+   compartilhado no topo da pagina: na exportacao ele saia uma vez so, com os
+   KPIs da Visao Geral, e os KPIs das outras seis abas simplesmente nao
+   apareciam no PDF. */
+function kpiCardsHtml(theme){
+  return (KPIS[theme]||[]).map(function(k){
+    var arrow = k.cls==='up' ? '▲' : k.cls==='down' ? '▼' : k.cls==='warn' ? '●' : '—';
+    return '<div class="kpi c-'+k.color+'">'+
+      '<div class="kpi-label">'+k.label+'</div>'+
+      '<div class="kpi-value">'+k.value+'</div>'+
+      '<div class="kpi-delta '+k.cls+'">'+arrow+' '+k.delta+'</div>'+
+      '<div class="kpi-note">'+k.note+'</div></div>';
+  }).join('');
+}
+function buildPrintKpis(){
+  themes.forEach(function(t){
+    var sec = document.getElementById('section-'+t);
+    if(!sec || sec.querySelector('.kpi-print')) return;
+    var g = document.createElement('div');
+    g.className = 'kpi-grid kpi-print';
+    g.innerHTML = kpiCardsHtml(t);
+    sec.insertBefore(g, sec.firstChild);
+  });
+}
+function resizeAllCharts(){
+  if(window.Chart && Chart.instances){
+    Object.values(Chart.instances).forEach(function(c){ try{ c.resize(); }catch(e){} });
+  }
+}
+function enterPrintMode(){
+  themes.forEach(function(t){
     document.getElementById('section-'+t).classList.add('active');
     if(!initialized[t]){ initFns[t](); initialized[t] = true; }
   });
-  renderKpis('overview');
-  requestAnimationFrame(()=>{
-    setTimeout(()=>{
-      if (window.Chart && Chart.instances) {
-        Object.values(Chart.instances).forEach(c=>{ try{ c.resize(); }catch(e){} });
+  buildPrintKpis();
+  document.documentElement.classList.add('print-mode');
+  void document.body.offsetHeight;   // forca o recalculo do layout ja com a largura do papel
+  resizeAllCharts();
+  marcarPaineisQuebraveis();
+  ajustarPaginacao();
+  resizeAllCharts();
+}
+/* Um painel so pode ser cortado entre paginas quando e uma tabela longa:
+   sem grafico dentro e mais alto que 60% da area util da pagina. Painel curto
+   quebrado ao meio deixa um "rabicho" de duas ou tres linhas sozinho na pagina
+   seguinte, que foi justamente um dos incomodos da exportacao anterior. */
+var ALTURA_MINIMA_PARA_QUEBRAR = 420;
+function marcarPaineisQuebraveis(){
+  document.querySelectorAll('.panel').forEach(function(p){
+    var longa = !p.querySelector('canvas') &&
+                p.getBoundingClientRect().height > ALTURA_MINIMA_PARA_QUEBRAR;
+    p.classList.toggle('panel-split', longa);
+  });
+}
+function leavePrintMode(){
+  if(!document.documentElement.classList.contains('print-mode')) return;
+  document.documentElement.classList.remove('print-mode');
+  void document.body.offsetHeight;
+  resizeAllCharts();
+  if(__preprintTheme){ showTheme(__preprintTheme); }
+}
+window.__enterPrintMode = enterPrintMode;   /* usado pelos testes de renderizacao */
+
+
+/* -------------------------------------------------------------------------
+   AJUSTE FINO DE PAGINACAO
+   Percorre os blocos de cada aba simulando onde o navegador vai quebrar a
+   pagina e mexe SO na altura dos graficos para:
+     (a) puxar de volta um bloco que estouraria a pagina por pouco;
+     (b) esticar o ultimo bloco da pagina quando sobra espaco.
+   E o que evita aquele padrao de "meia pagina util, meia pagina preta".
+   Roda uma unica vez, com o print-mode ja aplicado (portanto ja com a
+   largura do papel), e nunca altera texto, ordem ou dados — so altura.
+   ------------------------------------------------------------------------- */
+var PAGINA_PX  = 725;   /* 192mm de area util no A4 paisagem */
+var FOLGA_PX   = 16;    /* margem de seguranca contra arredondamento do Chrome */
+var FATOR_MIN  = 0.60;  /* nunca encolhe um grafico alem disso */
+
+/* Distancia real que o bloco ocupa no fluxo, ja com as margens colapsadas.
+   Precisa pular os irmaos ocultos (abas, botao de exportar, KPI antigo): um
+   elemento com display:none tem offsetTop zero e faria a conta dar negativo. */
+function proximoVisivel(b){
+  var n = b.nextElementSibling;
+  while(n && n.offsetParent === null) n = n.nextElementSibling;
+  return n;
+}
+function avancoDoBloco(b){
+  var prox = proximoVisivel(b);
+  if(prox) return prox.offsetTop - b.offsetTop;
+  var pai = b.parentElement;
+  return (pai.offsetTop + pai.offsetHeight) - b.offsetTop;
+}
+function caixasDeGrafico(b){
+  return Array.prototype.slice.call(b.querySelectorAll('.chart-box'));
+}
+function alturaOriginal(cb){
+  if(!cb.dataset.alturaBase){
+    cb.dataset.alturaBase = String(Math.round(cb.getBoundingClientRect().height));
+  }
+  return +cb.dataset.alturaBase;
+}
+/* Encolhe todos os graficos do bloco pelo mesmo delta, para que dois paineis
+   lado a lado continuem alinhados. Devolve false se furar o limite. */
+function encolherBloco(b, quanto){
+  var caixas = caixasDeGrafico(b);
+  if(!caixas.length || quanto <= 0) return false;
+  var alvos = caixas.map(function(cb){ return Math.round(alturaOriginal(cb) - quanto); });
+  var vale = caixas.every(function(cb, i){
+    return alvos[i] >= 120 && alvos[i] / alturaOriginal(cb) >= FATOR_MIN;
+  });
+  if(!vale) return false;
+  caixas.forEach(function(cb, i){ cb.style.setProperty('height', alvos[i] + 'px', 'important'); });
+  return true;
+}
+/* Abre espaco encolhendo os graficos ja colocados na pagina, do ultimo para o
+   primeiro. E o que permite um bloco de tabela (altura fixa, nao ajustavel)
+   subir para a pagina anterior em vez de comecar uma pagina quase vazia. */
+function liberarEspaco(naPagina, precisa){
+  for(var i = naPagina.length - 1; i >= 0 && precisa > 0; i--){
+    var b = naPagina[i];
+    if(!caixasDeGrafico(b).length) continue;
+    var antes = avancoDoBloco(b);
+    if(!encolherBloco(b, precisa)){
+      var cb = caixasDeGrafico(b)[0];
+      var maximo = Math.floor(alturaOriginal(cb) * (1 - FATOR_MIN));
+      if(maximo <= 0 || !encolherBloco(b, maximo)) continue;
+    }
+    precisa -= (antes - avancoDoBloco(b));
+  }
+  return precisa <= 0;
+}
+
+/* -------------------------------------------------------------------------
+   Percorre os blocos de cada aba simulando onde o Chrome vai quebrar a pagina
+   e, quando um bloco estoura por pouco, encolhe graficos o suficiente para
+   ele caber na pagina atual. Sem isso, um painel que passa 30px do limite era
+   jogado inteiro para a pagina seguinte e deixava meia pagina preta.
+
+   Testamos tambem o caminho inverso — esticar o ultimo bloco para consumir a
+   sobra — e o resultado ficou pior: crescer um bloco empurra o seguinte para
+   fora da pagina e cria um vao novo logo adiante. Por isso o passe so encolhe.
+   ------------------------------------------------------------------------- */
+function ajustarPaginacao(){
+  var util = PAGINA_PX - FOLGA_PX;
+  var cab = document.querySelector('header');
+  var alturaCabecalho = cab ? avancoDoBloco(cab) : 0;
+
+  themes.forEach(function(tema, indice){
+    var sec = document.getElementById('section-'+tema);
+    if(!sec) return;
+
+    var base = (indice === 0) ? alturaCabecalho : 0;   /* cada aba comeca em pagina nova */
+    var naPagina = [];
+    function usado(){
+      var soma = base;
+      naPagina.forEach(function(b){ soma += avancoDoBloco(b); });
+      return soma;
+    }
+
+    Array.prototype.slice.call(sec.children).forEach(function(b){
+      var h = avancoDoBloco(b);
+      if(usado() + h <= util){ naPagina.push(b); return; }
+
+      /* Tabela longa: quebra entre paginas por conta propria; so consome o resto. */
+      if(b.classList.contains('panel-split')){
+        var resto = (usado() + h) % util;
+        naPagina = [];
+        base = resto;
+        return;
       }
+      var excesso = usado() + h - util;
+      /* 1) encolhe os graficos do proprio bloco para ele caber aqui */
+      if(encolherBloco(b, excesso) && usado() + avancoDoBloco(b) <= util){
+        naPagina.push(b); return;
+      }
+      /* 2) ou abre espaco encolhendo o que ja esta na pagina */
+      if(liberarEspaco(naPagina, excesso) && usado() + avancoDoBloco(b) <= util){
+        naPagina.push(b); return;
+      }
+      /* 3) nao coube: comeca uma pagina nova com este bloco */
+      naPagina = [b];
+      base = 0;
+    });
+  });
+}
+
+/* =========================================================================
+   EXPORTAÇÃO EM PDF
+   ========================================================================= */
+let __preprintTheme = null;
+function currentTheme(){
+  return themes.find(function(t){ return document.getElementById('section-'+t).classList.contains('active'); }) || 'overview';
+}
+function exportPdf(){
+  __preprintTheme = currentTheme();
+  enterPrintMode();
+  requestAnimationFrame(function(){
+    setTimeout(function(){
+      resizeAllCharts();
       window.print();
-    }, 350);
+    }, 400);
   });
 }
 document.getElementById('exportPdfBtn').addEventListener('click', exportPdf);
-// O resize() chamado no clique do botão roda ANTES do CSS de impressão ser
-// aplicado pelo navegador, então o canvas de cada gráfico pode ficar com o
-// tamanho da tela em vez do tamanho real da página impressa (causando
-// rótulos/insights cortados ou sobrepostos). O evento 'beforeprint' dispara
-// depois que o navegador já recalculou o layout para impressão — então
-// redesenhamos os gráficos de novo aqui, com as dimensões corretas. Isso
-// cobre tanto o botão "Exportar PDF" quanto um Ctrl+P nativo.
+
+/* Ctrl+P direto do navegador: o beforeprint monta o mesmo estado. Como a classe
+   print-mode ja fixa a largura do papel, o resize aqui acontece com as medidas
+   corretas — era exatamente esse o ponto que quebrava antes. */
 window.addEventListener('beforeprint', function(){
-  if (window.Chart && Chart.instances) {
-    Object.values(Chart.instances).forEach(c=>{ try{ c.resize(); }catch(e){} });
+  if(!document.documentElement.classList.contains('print-mode')){
+    __preprintTheme = currentTheme();
+    enterPrintMode();
+  } else {
+    resizeAllCharts();
   }
 });
-window.addEventListener('afterprint', function(){
-  if(__preprintTheme){ showTheme(__preprintTheme); }
-});
+window.addEventListener('afterprint', leavePrintMode);
 
 } // end initDashboard
 
