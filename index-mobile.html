@@ -115,11 +115,6 @@
   .tab-btn.active{background:var(--card-hover); border-color:var(--teal); color:var(--text); box-shadow:0 0 0 1px rgba(45,217,195,0.25), 0 8px 24px rgba(45,217,195,0.08);}
   .tab-btn.active .tdot{background:var(--teal); box-shadow:0 0 8px var(--teal);}
 
-  .mini-toggle{display:flex; gap:6px;}
-  .mini-toggle button{background:var(--card); border:1px solid var(--border); color:var(--text-dim); padding:5px 12px; border-radius:8px; font-size:11px; font-weight:700; cursor:pointer; transition:all .2s ease; letter-spacing:.2px;}
-  .mini-toggle button:hover{border-color:rgba(255,255,255,0.18); color:var(--text);}
-  .mini-toggle button.active{background:var(--card-hover); border-color:var(--teal); color:var(--text); box-shadow:0 0 0 1px rgba(45,217,195,0.25);}
-
   .kpi-grid{display:grid; grid-template-columns:repeat(auto-fit, minmax(226px,1fr)); gap:16px; margin-bottom:34px;}
   .kpi{background:var(--card); border:1px solid var(--border); border-radius:var(--radius); padding:20px 20px 18px; position:relative; overflow:hidden; transition:transform .25s ease, border-color .25s ease, background .25s ease; opacity:0; animation:fadeUp .5s ease forwards;}
   .kpi:hover{transform:translateY(-3px); border-color:rgba(255,255,255,0.16); background:var(--card-hover);}
@@ -363,6 +358,14 @@
     html.print-mode .panel{ padding:13px 15px 11px; border-radius:12px; animation:none !important; opacity:1 !important; }
     html.print-mode .panel h3{ font-size:13px; }
     html.print-mode .panel .desc{ font-size:10.5px; margin-bottom:8px; }
+    /* --- acordeoes: no papel viram conteudo corrido ---------------------- *
+     * O JS abre todos os <details> antes de imprimir. Sobra o rotulo de
+     * clique ("Ver 23 prestadores"), que nao faz sentido numa folha; o
+     * conteudo ja esta logo abaixo. O glossario mantem o titulo, porque ali
+     * o summary e um cabecalho de verdade. */
+    html.print-mode .med-detail > summary{ display:none !important; }
+    html.print-mode .med-detail .items{ margin-top:0; }
+    html.print-mode .glossary-box summary::before{ display:none; }
     html.print-mode .insight{ margin-top:7px; padding:7px 10px; font-size:10.8px; line-height:1.45; }
     html.print-mode .source-tag{ margin-top:7px; }
     html.print-mode .hl-card{ padding:10px 12px; }
@@ -422,6 +425,11 @@
     .report-timestamp{ margin-top:5px; }
     .header-logos img.logo-rr{ height:38px; }
     .header-logos img.logo-ipes{ height:33px; }
+
+    /* --- acordeoes: no papel viram conteudo corrido (ver bloco acima) ---- */
+    .med-detail > summary{ display:none !important; }
+    .med-detail .items{ margin-top:0; }
+    .glossary-box summary::before{ display:none; }
 
     /* --- KPIs: os 5 cards do tema em UMA linha unica --------------------- */
     #kpiGrid{ display:none !important; }
@@ -543,7 +551,7 @@
         <div class="header-meta">
           <div class="meta-period">
             <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
-            Maio – Julho 2026
+            Junho – Agosto 2026
           </div>
           <div class="meta-authors">
             <div class="author-line initiative-line">Uma iniciativa da <b>RR Auditoria Médica</b></div>
@@ -637,7 +645,7 @@
   <!-- THEME 1 — REGULAÇÃO PRODUTIVIDADE                             -->
   <!-- ============================================================ -->
   <section class="theme-section" id="section-reg-prod">
-    <div class="section-title"><h2>Produtividade Geral SADT</h2><span class="tag">JULHO 2026 · 22 DIAS ÚTEIS</span></div>
+    <div class="section-title"><h2>Produtividade Geral SADT</h2><span class="tag">AGOSTO 2026 · 22 DIAS ÚTEIS</span></div>
     <div class="grid-2">
       <div class="panel" id="rpGeralPanel" style="animation-delay:.05s">
         <div class="panel-head"><h3>Guias solicitadas, periciadas e pendentes</h3></div>
@@ -653,12 +661,12 @@
       </div>
     </div>
 
-    <div class="section-title"><h2>Produtividade Individual</h2><span class="tag">PERÍCIAS SADT + REVERSÕES DE CIRURGIAS · JULHO</span></div>
+    <div class="section-title"><h2>Produtividade Individual</h2><span class="tag">PERÍCIAS SADT + REVERSÕES DE CIRURGIAS · AGOSTO</span></div>
     <div class="panel" id="rpProdIndPanel" style="animation-delay:.05s">
-      <div class="panel-head"><h3>Produção total por colaborador</h3><span class="badge">10.579 perícias · 1.662 reversões</span></div>
-      <div class="desc">Médicos, dentista e enfermeiras — perícias SADT e reversões de guias de cirurgias/procedimentos no Benner, contabilizadas separadamente · total de cada colaborador ao final da barra</div>
+      <div class="panel-head"><h3>Produção total por colaborador</h3><span class="badge">12.241 guias tratadas</span></div>
+      <div class="desc">Médicos, dentista e enfermeiras — soma de <span style="color:var(--blue)">▉</span> perícias SADT e <span style="color:var(--amber)">▉</span> reversões de guias de cirurgias/procedimentos no Benner · total ao final da barra</div>
       <div class="chart-box" style="height:460px"><canvas id="rpPericiasSadt"></canvas></div>
-      <div class="insight">Em julho, o setor registrou <b>10.579 perícias SADT</b> e <b>1.662 reversões de cirurgias/procedimentos</b> — indicadores tratados de forma independente a partir deste mês, sem soma entre eles. Olhando o volume combinado por colaborador (útil só para ranking individual), <b>Dra. Ana Angélica Dantas</b> lidera com 1.850 (1.824 perícias + 26 reversões), seguida de Dra. Marcela com 1.751 e Dr. André Luiz com 1.589.</div>
+      <div class="insight">Somando as duas atividades, o setor tratou <b>12.241 guias</b> em julho: 10.579 perícias SADT e 1.662 reversões de cirurgias/procedimentos. <b>Dra. Ana Angélica Dantas</b> lidera com 1.850 (1.824 perícias + 26 reversões), seguida de Dra. Marcela com 1.751 e Dr. André Luiz com 1.589.</div>
       <div class="insight">Duas observações de turno registradas pelo setor: <b>Dr. João Oliveira Deda</b> se ausentou em 8 turnos previstos em julho, já compensados com atuação adicional em maio e junho — o que explica sua produção mais baixa no mês (745). <b>Dra. Ana Angélica Dantas</b> realizou 2 turnos adicionais em julho para compensar 2 turnos que fará em agosto — o que contribui para sua liderança no mês (1.824).</div>
 
     </div>
@@ -696,7 +704,7 @@
   <!-- THEME 2 — REGULAÇÃO DESEMPENHO                                -->
   <!-- ============================================================ -->
   <section class="theme-section" id="section-reg-des">
-    <div class="section-title"><h2>Entrada de Eletivos · Central de Autorizações</h2><span class="tag">TOP 10 · JULHO</span></div>
+    <div class="section-title"><h2>Entrada de Eletivos · Central de Autorizações</h2><span class="tag">TOP 10 · AGOSTO</span></div>
     <div class="grid-2">
       <div class="panel" style="animation-delay:.05s">
         <h3>Top 10 especialidades por volume</h3>
@@ -711,7 +719,6 @@
         </div>
         <div class="insight good"><b>Crescimento em destaque:</b> Ortopedia (77→111, +44,2%), Colecistectomia (+34,6%) e Colonoscopia/Endoscopia (+28,6%).</div>
         <div class="insight warn"><b>Queda em destaque:</b> Histerectomia Total (32→25, -21,9%) e Programa da Dor (49→46, -6,1%) — as duas únicas do Top 10 em retração.</div>
-        <div class="insight">O Top 10 concentra <b>442 das 753 solicitações</b> (58,7%). As <b>demais especialidades somam 311</b> (41,3%), distribuídas fora do ranking principal.</div>
       </div>
     </div>
 
@@ -722,15 +729,15 @@
       <div class="insight">O volume total de eletivos cresce <b>23,4%</b> (610 → 753), com 8 das 10 principais especialidades em alta. A <b>Ortopedia</b> é o motor do crescimento, respondendo sozinha por 34 das 143 solicitações adicionais.</div>
     </div>
 
-    <div class="section-title"><h2>Participação dos Prestadores</h2><span class="tag">JULHO 2026 · % DO TOTAL</span></div>
+    <div class="section-title"><h2>Participação dos Prestadores</h2><span class="tag">AGOSTO 2026 · % DO TOTAL</span></div>
     <div class="panel" style="animation-delay:.05s">
       <h3>Solicitações por prestador e percentual de participação</h3>
-      <div class="desc">Empilhado por mês (Mai/Jun/Jul) · total e % de participação em Julho ao final da barra · ordenado do maior para o menor</div>
+      <div class="desc">Empilhado por mês (Jun/Jul/Ago) · total e % de participação em Agosto ao final da barra · ordenado do maior para o menor</div>
       <div class="chart-box" style="height:420px"><canvas id="rdPrestadores"></canvas></div>
       <div class="insight"><b>Hospital Primavera</b> retoma a liderança em julho com 23,5%, seguido de perto por DECOS (22,6%). Os três maiores concentram <b>65,8%</b> das 753 solicitações — volume 23,4% acima de junho. <b>Santa Helena</b> é o destaque isolado: salta de 24 para 65 solicitações.</div>
     </div>
 
-    <div class="section-title"><h2>Perícia Presencial</h2><span class="tag">AGENDADAS VS REALIZADAS · JANEIRO A JULHO 2026</span></div>
+    <div class="section-title"><h2>Perícia Presencial</h2><span class="tag">AGENDADAS VS REALIZADAS · JANEIRO A AGOSTO 2026</span></div>
     <div class="grid-2">
       <div class="panel" style="animation-delay:.05s">
         <h3>Evolução do comparecimento (%)</h3>
@@ -752,24 +759,24 @@
 
     <div class="section-title"><h2>SLA de Emissão de Guias</h2><span class="tag">PRAZO DE ATENDIMENTO</span></div>
     <div class="panel" id="rdSlaEletivoPanel" style="animation-delay:.05s">
-      <div class="panel-head"><h3>Eletivos — composição por prazo</h3><span class="badge up">65,6% dentro do padrão (≥45 dias)</span></div>
-      <div class="desc">713 (Mai) · 708 (Jun) · 784 (Jul) guias emitidas</div>
+      <div class="panel-head"><h3>Eletivos — composição por prazo</h3><span class="badge up">65,6% dentro do padrão (≥45 dias) · dado de Julho, ver nota</span></div>
+      <div class="desc">708 (Jun) · 784 (Jul) · 641 (Ago, base parcial) guias classificadas por faixa de prazo</div>
       <div class="grid-3" style="margin-top:10px">
-        <div><div style="text-align:center; font-size:12px; font-weight:700; color:var(--text-dim); margin-bottom:4px">MAIO</div><div class="chart-box" style="height:300px"><canvas id="rdSlaEletivoAbril"></canvas></div></div>
-        <div><div style="text-align:center; font-size:12px; font-weight:700; color:var(--text-dim); margin-bottom:4px">JUNHO</div><div class="chart-box" style="height:300px"><canvas id="rdSlaEletivoMaio"></canvas></div></div>
-        <div><div style="text-align:center; font-size:12px; font-weight:700; color:var(--text-dim); margin-bottom:4px">JULHO</div><div class="chart-box" style="height:300px"><canvas id="rdSlaEletivoJunho"></canvas></div></div>
+        <div><div style="text-align:center; font-size:12px; font-weight:700; color:var(--text-dim); margin-bottom:4px">JUNHO</div><div class="chart-box" style="height:300px"><canvas id="rdSlaEletivoAbril"></canvas></div></div>
+        <div><div style="text-align:center; font-size:12px; font-weight:700; color:var(--text-dim); margin-bottom:4px">JULHO</div><div class="chart-box" style="height:300px"><canvas id="rdSlaEletivoMaio"></canvas></div></div>
+        <div><div style="text-align:center; font-size:12px; font-weight:700; color:var(--text-dim); margin-bottom:4px">AGOSTO*</div><div class="chart-box" style="height:300px"><canvas id="rdSlaEletivoJunho"></canvas></div></div>
       </div>
-      <div class="insight good">O padrão para eletivos é emissão a partir de 45 dias. Cerca de 2 em cada 3 guias seguem essa regra — patamar estável nos três meses (as demais fatias são Planilha de Pedidos, Onco/Quinzenais e Cotas), mesmo com o volume subindo para 784 guias em julho. As guias emitidas <b>abaixo de 45 dias</b> voltaram a aparecer: de <b>0%</b> em junho para <b>1,5%</b> (12 guias) em julho — volume pequeno, mas vale monitorar para não retomar os 3,4% de maio.</div>
+      <div class="insight warn">*Agosto ainda mantém os números de Julho neste gráfico: a base enviada para agosto (641 guias) é menor que o total de solicitações eletivas do mês (777) — falta a fatia "&lt; 45 dias". Assim que o setor confirmar o número certo, o gráfico de agosto é atualizado.</div>
     </div>
     <div class="panel" style="margin-top:18px; animation-delay:.1s">
-      <div class="panel-head"><h3>Urgência — composição por prazo</h3><span class="badge up">83,0% dentro de 3 dias</span></div>
-      <div class="desc">1114 (Mai) · 1188 (Jun) · 1173 (Jul) guias emitidas</div>
+      <div class="panel-head"><h3>Urgência — composição por prazo</h3><span class="badge down">81,8% dentro de 3 dias</span></div>
+      <div class="desc">1188 (Jun) · 1173 (Jul) · 1071 (Ago) guias emitidas</div>
       <div class="grid-3" style="margin-top:10px">
-        <div><div style="text-align:center; font-size:12px; font-weight:700; color:var(--text-dim); margin-bottom:4px">MAIO</div><div class="chart-box" style="height:270px"><canvas id="rdSlaUrgenciaAbril"></canvas></div></div>
-        <div><div style="text-align:center; font-size:12px; font-weight:700; color:var(--text-dim); margin-bottom:4px">JUNHO</div><div class="chart-box" style="height:270px"><canvas id="rdSlaUrgenciaMaio"></canvas></div></div>
-        <div><div style="text-align:center; font-size:12px; font-weight:700; color:var(--text-dim); margin-bottom:4px">JULHO</div><div class="chart-box" style="height:270px"><canvas id="rdSlaUrgenciaJunho"></canvas></div></div>
+        <div><div style="text-align:center; font-size:12px; font-weight:700; color:var(--text-dim); margin-bottom:4px">JUNHO</div><div class="chart-box" style="height:270px"><canvas id="rdSlaUrgenciaAbril"></canvas></div></div>
+        <div><div style="text-align:center; font-size:12px; font-weight:700; color:var(--text-dim); margin-bottom:4px">JULHO</div><div class="chart-box" style="height:270px"><canvas id="rdSlaUrgenciaMaio"></canvas></div></div>
+        <div><div style="text-align:center; font-size:12px; font-weight:700; color:var(--text-dim); margin-bottom:4px">AGOSTO</div><div class="chart-box" style="height:270px"><canvas id="rdSlaUrgenciaJunho"></canvas></div></div>
       </div>
-      <div class="insight good">O atendimento dentro de 3 dias recupera os <b>83,0%</b> de maio, revertendo a queda de junho (77,3%) — ganho de 5,7 pontos percentuais com volume praticamente estável.</div>
+      <div class="insight warn">O atendimento dentro de 3 dias recua para <b>81,8%</b> em agosto, uma leve piora frente aos <b>83,0%</b> de julho — 1,2 ponto percentual, com volume total também menor (1.071 guias).</div>
     </div>
 
     <div class="section-title"><h2>Monitoramento TAVI</h2><span class="tag">IMPLANTE TRANSCATETER DE VÁLVULA AÓRTICA · 2026</span></div>
@@ -797,7 +804,7 @@
       <div id="rdTaviTable" style="margin-top:8px"></div>
     </div>
 
-    <div class="section-title"><h2>Regulação de Curativos</h2><span class="tag">DADOS NÃO FORNECIDOS EM JULHO/2026</span></div>
+    <div class="section-title"><h2>Regulação de Curativos</h2><span class="tag">DADOS NÃO FORNECIDOS EM AGOSTO/2026</span></div>
     <div class="grid-2">
       <div class="panel" style="animation-delay:.05s">
         <h3>Valores por categoria</h3>
@@ -826,7 +833,7 @@
         <div class="desc">Empilhado por mês — total ao final da barra · passe o mouse sobre a barra para ver o código do procedimento</div>
         <div class="chart-box" style="height:560px"><canvas id="rvEletivos"></canvas></div>
         <div style="display:flex; gap:18px; font-size:11px; color:var(--text-dim); margin:6px 0 2px 0; flex-wrap:wrap">
-          <span><b style="color:#3ddc84">▉ nome em verde</b> = 2 maiores crescimentos no trimestre (Mai→Jul)</span>
+          <span><b style="color:#3ddc84">▉ nome em verde</b> = 2 maiores crescimentos no trimestre (Jun→Ago)</span>
           <span><b style="color:#f5b342">▉ nome em âmbar</b> = 2 menores crescimentos no trimestre (todos positivos)</span>
         </div>
         <div class="insight">Histerectomias seguem no topo (187 e 179 no período). O grande movimento de julho é a <b>ortopedia de ombro</b>: Reparo Artroscópico do Manguito (+278%), Acromioplastia (+247%) e Ressecção Lateral da Clavícula (+213%) de maio para julho — coerente com a alta de 44% na especialidade Ortopedia na entrada de eletivos.</div>
@@ -863,8 +870,8 @@
             <div class="hl-row"><span class="name">Parto Cesáreo (Enfermaria)</span><span class="val">-27%</span></div></div>
         </div>
         <div style="display:flex; gap:18px; font-size:11px; color:var(--text-dim); margin:6px 0 2px 0; flex-wrap:wrap">
-          <span><b style="color:#3ddc84">▉ nome em verde</b> = 2 maiores crescimentos no trimestre (Mai→Jul)</span>
-          <span><b style="color:#f2495c">▉ nome em vermelho</b> = 2 maiores quedas no trimestre (Mai→Jul)</span>
+          <span><b style="color:#3ddc84">▉ nome em verde</b> = 2 maiores crescimentos no trimestre (Jun→Ago)</span>
+          <span><b style="color:#f2495c">▉ nome em vermelho</b> = 2 maiores quedas no trimestre (Jun→Ago)</span>
         </div>
         <div class="insight good">O pico de cateteres venosos centrais observado no trimestre anterior <b>normalizou</b>: 40 em junho para 21 em julho. O volume de urgência recua 9,3% (1.447 → 1.312) — a queda concentra-se em partos/cesáreas e taxas de acompanhante, não em procedimentos diagnósticos.</div>
       </div>
@@ -892,7 +899,7 @@
   <!-- THEME 3 — CONCORRENTE PRODUTIVIDADE                           -->
   <!-- ============================================================ -->
   <section class="theme-section" id="section-con-prod">
-    <div class="section-title"><h2>Internações Superiores a 3 Dias</h2><span class="tag">JULHO 2026</span></div>
+    <div class="section-title"><h2>Internações Superiores a 3 Dias</h2><span class="tag">AGOSTO 2026</span></div>
     <div class="stat-strip">
       <div class="stat-box"><div class="n" style="color:var(--teal)">609</div><div class="l">Total de Internados</div></div>
       <div class="stat-box"><div class="n" style="color:var(--blue)">528</div><div class="l">Pacientes Elegíveis (&gt;3 dias)</div></div>
@@ -957,7 +964,7 @@
   <!-- THEME 4 — CONCORRENTE DESEMPENHO                              -->
   <!-- ============================================================ -->
   <section class="theme-section" id="section-con-des">
-    <div class="section-title"><h2>Panorama de Visitas do Ano</h2><span class="tag">JANEIRO – JULHO 2026</span></div>
+    <div class="section-title"><h2>Panorama de Visitas do Ano</h2><span class="tag">JANEIRO – AGOSTO 2026</span></div>
     <div class="stat-strip">
       <div class="stat-box"><div class="n" style="color:var(--teal)">8.929</div><div class="l">Visitas (Jan–Jul)</div></div>
       <div class="stat-box"><div class="n" style="color:var(--blue)">1.276</div><div class="l">Média Mensal de Visitas</div></div>
@@ -1018,7 +1025,7 @@
       <div class="insight"><b>Hospital Renascença</b> segue líder isolado (2.591 em julho), mas acumula -25,3% desde maio. A queda de 19,3% no total do mês é generalizada: 15 dos 23 prestadores ativos recuaram. <b>Avosos</b> (+155,6%), <b>São Lucas</b> (+32,7%) e <b>Santa Izabel</b> (+30,4%) foram na direção oposta.</div>
     </div>
 
-    <div class="section-title"><h2>Top 3 Variação Percentual</h2><span class="tag">JUNHO → JULHO</span></div>
+    <div class="section-title"><h2>Top 3 Variação Percentual</h2><span class="tag">JULHO → AGOSTO</span></div>
     <div class="grid-2b">
       <div class="panel" style="animation-delay:.05s">
         <h3>Prestadores que mais cresceram</h3>
@@ -1048,42 +1055,22 @@
       </div>
     </div>
 
-    <div class="section-title"><h2>Contas por Tipo de Atendimento</h2><span class="tag">JULHO · TOTAL 7.744</span></div>
+    <div class="section-title"><h2>Hospital Primavera</h2><span class="tag">MAIOR VOLUME DE RECURSOS · AGOSTO</span></div>
+    <div class="panel" style="animation-delay:.05s">
+      <div id="rrPrimaveraTable" style="margin-top:8px"></div>
+      <div class="insight warn">O volume de contas recua 31,9% (1.690 → 1.151), mas os <b>recursos gerados subiram 70,1%</b> (87 → 148). O índice de retrabalho passa de 5,15% para <b>12,86%</b> — segundo maior volume absoluto de recursos do mês.</div>
+    </div>
+
+    <div class="section-title"><h2>Contas por Tipo de Atendimento</h2><span class="tag">AGOSTO · TOTAL 8.607</span></div>
     <div class="panel" id="rrTipoPanel" style="animation-delay:.05s">
       <div id="rrTipoTable"></div>
     </div>
 
-    <div class="section-title"><h2>Contas por Enfermeiro Auditor</h2><span class="tag">14 AUDITORES · JULHO</span></div>
+    <div class="section-title"><h2>Contas por Enfermeiro Auditor</h2><span class="tag">14 AUDITORES · AGOSTO</span></div>
     <div class="grid-2">
       <div class="panel" style="animation-delay:.05s">
-        <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap">
-          <h3>Total no período</h3>
-          <div class="mini-toggle">
-            <button id="rrAudBrutoBtn" class="active">Bruto</button>
-            <button id="rrAudPonderadoBtn">Ponderado</button>
-          </div>
-        </div>
+        <h3>Total no período</h3>
         <div class="chart-box" style="height:360px"><canvas id="rrAuditorTotal"></canvas></div>
-        <div class="insight" id="rrAuditorInsight" style="margin-top:8px">Ranking por volume bruto de contas, sem ajuste de peso. <b>Marília</b> lidera com 1.274 contas no período.</div>
-        <details class="med-detail" style="margin-top:8px">
-          <summary>Ver tabela de peso por tipo de conta</summary>
-          <div class="items">
-            <table style="width:100%; border-collapse:collapse; font-size:11.5px;">
-              <thead><tr style="color:var(--text-faint); text-align:left"><th style="padding:2px 6px 4px 0; font-weight:600">Tipo de conta</th><th style="padding:2px 6px 4px; font-weight:600">Peso</th><th style="padding:2px 0 4px; font-weight:600">Tempo médio</th></tr></thead>
-              <tbody>
-                <tr><td style="padding:2px 6px 2px 0">Internamento</td><td style="padding:2px 6px">5</td><td style="padding:2px 0">30 min</td></tr>
-                <tr><td style="padding:2px 6px 2px 0">Home Care - ID</td><td style="padding:2px 6px">4</td><td style="padding:2px 0">20 min</td></tr>
-                <tr><td style="padding:2px 6px 2px 0">Oncologia</td><td style="padding:2px 6px">3</td><td style="padding:2px 0">15 min</td></tr>
-                <tr><td style="padding:2px 6px 2px 0">Home Care - AD</td><td style="padding:2px 6px">2</td><td style="padding:2px 0">10 min</td></tr>
-                <tr><td style="padding:2px 6px 2px 0">Home Care - Gerenciamento</td><td style="padding:2px 6px">2</td><td style="padding:2px 0">10 min</td></tr>
-                <tr><td style="padding:2px 6px 2px 0">Home Care - Hospitalar</td><td style="padding:2px 6px">1</td><td style="padding:2px 0">4 min</td></tr>
-                <tr><td style="padding:2px 6px 2px 0">Home Care - Remoção</td><td style="padding:2px 6px">1</td><td style="padding:2px 0">4 min</td></tr>
-                <tr><td style="padding:2px 6px 2px 0">Pronto Atendimento</td><td style="padding:2px 6px">1</td><td style="padding:2px 0">4 min</td></tr>
-                <tr><td style="padding:2px 6px 2px 0">SADT</td><td style="padding:2px 6px">1</td><td style="padding:2px 0">4 min</td></tr>
-              </tbody>
-            </table>
-          </div>
-        </details>
       </div>
       <div class="panel" style="animation-delay:.1s">
         <h3>Evolução mensal</h3>
@@ -1098,15 +1085,15 @@
       <div class="insight warn"><b>Hospital do Coração salta para 71,43%</b> (80 recursos em apenas 112 contas) — de longe o maior desvio do relatório e quase o triplo do segundo colocado. Em junho o índice era de 16,76%, com 30 recursos em 179 contas: os recursos quase triplicaram enquanto as contas caíram 37%. <b>Onco Brasil</b> (25,00%), <b>São Lucas</b> (16,79%) e <b>Primavera</b> (12,86%) completam o grupo de atenção. Recomenda-se auditoria de causa-raiz prioritária no Hospital do Coração.</div>
     </div>
 
-    <div class="section-title"><h2>Produtividade Médica Individual</h2><span class="tag">CONTAS AUDITADAS POR MÉDICO · JULHO 2026</span></div>
+    <div class="section-title"><h2>Produtividade Médica Individual</h2><span class="tag">CONTAS AUDITADAS POR MÉDICO · AGOSTO 2026</span></div>
     <div class="panel" style="animation-delay:.05s">
       <div id="rrMedicoTable" style="margin-top:8px"></div>
-      <div class="insight"><b>Dr. Lucas</b> (972 PJ Ipes + 526 Coopanest = 1.498 contas) e <b>Dr. Filipe</b> (1.424 contas, Coopanest) enviaram a produção de julho após o fechamento inicial e assumem a liderança do mês: <b>Dr. Lucas</b> com 1.498 contas (17,30/h) e <b>Dr. Filipe</b> com 1.424 contas (16,44/h), à frente de <b>Dr. Davi</b> (938 contas, 14,44/h).</div>
+      <div class="insight warn"><b>Dr. Lucas</b> e <b>Dr. Filipe</b> não encaminharam a produção de julho — aparecem como "não informado" e estão fora do cálculo da média da equipe, para não distorcer o indicador com um zero que não representa ausência de trabalho. <b>Dr. Davi</b> lidera com 938 contas (14,44/h).</div>
       <div class="source-tag" style="margin-top:12px">Dados fornecidos por Tayná Santos Pimentel · Coordenadora de Auditoria Retrospectiva</div>
     </div>
   </section>
 
-  <footer>Consolidado de Produtividade e Desempenho · Auditoria e Regulação · Ipesaúde Maio–Julho 2026.</footer>
+  <footer>Consolidado de Produtividade e Desempenho · Auditoria e Regulação · Ipesaúde Junho–Agosto 2026.</footer>
 </div>
 
 <div id="toast"></div>
@@ -1120,7 +1107,7 @@ Chart.defaults.color = '#9797a6';
 Chart.defaults.plugins.datalabels.display = false; // opt-in per chart
 
 const COLORS = {teal:'#2dd9c3', blue:'#5b9dff', amber:'#f5b342', red:'#f2495c', green:'#3ddc84', purple:'#a78bfa', pink:'#f28fa3', orange:'#f2884a', grid:'rgba(255,255,255,0.05)',
-  m1:'#e0c02f', m2:'#8d6fc9', m3:'#2dd9c3'}; // paleta discreta p/ séries mensais — janela Mai/Jun/Jul: Maio Amarelo (trânsito) · Junho Roxo · Julho Teal. Cores por mês são estáveis entre relatórios; vermelho fica reservado a alertas
+  m1:'#e0c02f', m2:'#8d6fc9', m3:'#2dd9c3'}; // paleta discreta p/ séries mensais — janela Jun/Jul/Ago: Junho Amarelo (trânsito) · Julho Roxo · Agosto Teal. Cores por mês são estáveis entre relatórios; vermelho fica reservado a alertas
 function fmt(n){ return typeof n === 'number' ? n.toLocaleString('pt-BR') : n; }
 function fmtMoneyShort(v){
   const n = Number(v) || 0;
@@ -1169,45 +1156,6 @@ const stackTotalPlugin = {
   }
 };
 Chart.register(stackTotalPlugin);
-
-// custom plugin: draw a total per dataset right below the native legend row
-// (legend.fit is overridden to reserve extra height, then afterDraw paints
-// the totals aligned under each legend item's marker, using its own color)
-const legendTotalsPlugin = {
-  id:'legendTotals',
-  afterInit(chart){
-    const legend = chart.legend;
-    if(!legend || legend.__totalsPatched) return;
-    legend.__totalsPatched = true;
-    const originalFit = legend.fit;
-    legend.fit = function(){
-      originalFit.call(this);
-      const opt = chart.options.plugins && chart.options.plugins.legendTotals;
-      if(opt && opt.show) this.height += 20;
-    };
-  },
-  afterDraw(chart){
-    try{
-      const opt = chart.options.plugins && chart.options.plugins.legendTotals;
-      if(!opt || !opt.show || !Array.isArray(opt.totals)) return;
-      const legend = chart.legend;
-      if(!legend || !legend.legendHitBoxes) return;
-      const {ctx} = chart;
-      ctx.save();
-      ctx.font = '700 11.5px Inter, sans-serif';
-      ctx.textAlign = 'left'; ctx.textBaseline = 'top';
-      legend.legendHitBoxes.forEach((box,i)=>{
-        const t = opt.totals[i];
-        if(t == null) return;
-        const text = typeof t === 'object' ? t.text : String(t);
-        ctx.fillStyle = (typeof t === 'object' && t.color) || '#f2f2f7';
-        ctx.fillText(text, box.left, box.top + box.height + 3);
-      });
-      ctx.restore();
-    }catch(e){ /* fail silently, never break chart rendering */ }
-  }
-};
-Chart.register(legendTotalsPlugin);
 
 // custom plugin: external callout labels with leader line for doughnuts (PowerPoint-style)
 const externalLabelsPlugin = {
@@ -1301,7 +1249,7 @@ function stackedBar(id, labels, datasets, opts={}){
   const valFmt = opts.money ? fmtMoneyShort : fmt;
   const totals = labels.map((_,i)=> datasets.reduce((sum,ds)=> sum + (Number(ds.data[i])||0), 0));
   const maxTotal = Math.max(...totals, 0);
-  const needsRoom = opts.totalLabel || opts.suffixByIndex || opts.extraRoom;
+  const needsRoom = opts.totalLabel || opts.suffixByIndex;
   // opts.codes: mapa opcional {nome do procedimento: código}. Quando informado, o código aparece
   // apenas no tooltip (hover sobre a barra), sem poluir o rótulo do eixo Y.
   const codesMap = opts.codes || null;
@@ -1312,8 +1260,7 @@ function stackedBar(id, labels, datasets, opts={}){
       plugins:{legend:legendTop(), tooltip:{...tooltipBase(), callbacks:{
         title: items=>{ const lbl = items[0]?.label || ''; const cod = codesMap && codesMap[lbl]; return cod ? `${cod} — ${lbl}` : lbl; },
         label:c=>` ${c.dataset.label}: ${valFmt(Number(c.parsed.x)||0)}`
-      }}, stackTotal:{show:true, formatter:valFmt, totalLabel:opts.totalLabel, suffixByIndex:opts.suffixByIndex},
-      legendTotals: opts.legendTotals ? {show:true, totals:opts.legendTotals} : {show:false}},
+      }}, stackTotal:{show:true, formatter:valFmt, totalLabel:opts.totalLabel, suffixByIndex:opts.suffixByIndex}},
       scales:{x:{stacked:true, grid:{color:COLORS.grid}, suggestedMax: needsRoom ? maxTotal*1.4 : undefined, ticks:{font:{size:11}, callback:v=>opts.money?fmtMoneyShort(v):String(v)}}, y:{stacked:true, grid:{display:false}, ticks:{autoSkip:false, font:{size:opts.lfont||11},
         color: opts.labelColors ? (ctx=>opts.labelColors[ctx.index] || '#8f8f9e') : '#8f8f9e'}}}}
   });
@@ -1416,53 +1363,53 @@ function toast(msg){ const t=document.getElementById('toast'); t.innerHTML=msg; 
    ========================================================================= */
 const KPIS = {
  'overview':[
-  {label:'Guias Periciadas · Jul', value:'10.579', delta:'481/dia útil · ↓ 9,0% vs Junho', cls:'down', color:'teal', note:'Produtividade Geral SADT', target:'reg-prod'},
-  {label:'Contas Auditadas · Jul', value:'7.744', delta:'-19,3% vs Junho (9.601)', cls:'down', color:'amber', note:'Retrospectiva', target:'retro-prod'},
-  {label:'Visitas Concorrente · Jul', value:'1.413', delta:'+14,9% vs Junho (1.230)', cls:'up', color:'blue', note:'Recorde do ano', target:'con-des'},
-  {label:'Maior Retrabalho', value:'71,43%', delta:'Hospital do Coração', cls:'down', color:'red', note:'Retrospectiva · alerta do mês', target:'retro-prod'},
-  {label:'Guias Urgência dentro de 3d', value:'83,0%', delta:'+5,7 p.p. vs Junho', cls:'up', color:'green', note:'Regulação · Desempenho', target:'reg-des'},
+  {label:'Guias Periciadas · Ago', value:'11.053', delta:'526/dia útil · ↑ 4,5% vs Julho', cls:'up', color:'teal', note:'Produtividade Geral SADT', target:'reg-prod'},
+  {label:'Contas Auditadas · Ago', value:'8.607', delta:'+11,1% vs Julho (7.744)', cls:'up', color:'amber', note:'Retrospectiva', target:'retro-prod'},
+  {label:'Visitas Concorrente · Ago', value:'1.229', delta:'-13,0% vs Julho (1.413)', cls:'down', color:'blue', note:'Concorrente · Desempenho', target:'con-des'},
+  {label:'Maior Retrabalho', value:'36,16%', delta:'Hospital do Coração · ↓ vs 71,43% em julho', cls:'up', color:'amber', note:'Retrospectiva · segue o maior do mês, mas em forte queda', target:'retro-prod'},
+  {label:'Guias Urgência dentro de 3d', value:'81,8%', delta:'-1,2 p.p. vs Julho', cls:'down', color:'amber', note:'Regulação · Desempenho', target:'reg-des'},
  ],
  'reg-prod':[
-  {label:'Guias Periciadas · Jul', value:'10.579', delta:'Média de 481/dia útil', cls:'down', color:'teal', note:'22 dias úteis no mês'},
-  {label:'Guias Não Periciadas', value:'1.344', delta:'↑ 77,1% vs Junho (759)', cls:'down', color:'red', note:'Requer priorização imediata'},
-  {label:'Top Perito SADT', value:'1.824', delta:'Ana Angélica Dantas', cls:'up', color:'green', note:'22,80 guias/hora (base mensal)'},
-  {label:'IPESCARDIO · Análises', value:'76', delta:'-27,6% vs Junho (105)', cls:'down', color:'pink', note:'Alexandre, José Augusto e Roberto'},
-  {label:'Total Portal Prestador', value:'6.482', delta:'Isadora Cardozo Roza lidera (1.590)', cls:'up', color:'teal', note:'13 peritos ativos · eletivos e urgência'},
+  {label:'Guias Periciadas · Ago', value:'11.053', delta:'Média de 526/dia útil', cls:'up', color:'teal', note:'21 dias úteis no mês'},
+  {label:'Guias Não Periciadas', value:'1.636', delta:'↑ 21,7% vs Julho (1.344)', cls:'down', color:'red', note:'Requer priorização imediata'},
+  {label:'Top Perito SADT', value:'1.600', delta:'Gabriel Couto Senra', cls:'up', color:'green', note:'26,67 guias/hora (base mensal)'},
+  {label:'IPESCARDIO · Análises', value:'91', delta:'+19,7% vs Julho (76)', cls:'up', color:'pink', note:'Alexandre, José Augusto e Roberto'},
+  {label:'Produção Total do Setor', value:'15.135', delta:'11.053 perícias + 4.082 reversões', cls:'up', color:'purple', note:'Salto grande em reversões vs julho (1.662) — confirmar com o setor'},
  ],
  'reg-des':[
-  {label:'Solicitações Eletivas · Jul', value:'753', delta:'+23,4% vs Junho (610)', cls:'up', color:'teal', note:'Central de Autorizações'},
-  {label:'Guias Eletivas dentro do padrão', value:'65,6%', delta:'514 de 784 guias ≥45 dias', cls:'up', color:'green', note:'Padrão do fluxo é emissão a partir de 45 dias'},
-  {label:'Guias Urgência dentro de 3d', value:'83,0%', delta:'+5,7 p.p. vs Junho (77,3%)', cls:'up', color:'green', note:'974 de 1.173 guias'},
-  {label:'Comparecimento Perícia Presencial', value:'82,2%', delta:'↑ vs 81,2% em Junho', cls:'up', color:'amber', note:'Julho · Dr. Camila e Dr. Marcos'},
-  {label:'Custo Evitado · Curativos', value:'—', delta:'Dados não fornecidos em Julho', cls:'neutral', color:'blue', note:'Acumulado anterior: R$ 156,8 mil'},
+  {label:'Solicitações Eletivas · Ago', value:'777', delta:'+3,2% vs Julho (753)', cls:'up', color:'teal', note:'Central de Autorizações'},
+  {label:'Guias Eletivas dentro do padrão', value:'63,2%', delta:'405 de 641 guias ≥45 dias', cls:'down', color:'amber', note:'Base parcial — total de guias emitidas (641) é menor que as solicitações do mês (777); confirmar com o setor'},
+  {label:'Guias Urgência dentro de 3d', value:'81,8%', delta:'-1,2 p.p. vs Julho (83,0%)', cls:'down', color:'amber', note:'876 de 1.071 guias'},
+  {label:'Comparecimento Perícia Presencial', value:'88,0%', delta:'↑ vs 82,2% em Julho', cls:'up', color:'amber', note:'Agosto · Dr. Camila e Dr. Marcos'},
+  {label:'Custo Evitado · Curativos', value:'—', delta:'Dados não fornecidos em Agosto', cls:'neutral', color:'blue', note:'Acumulado anterior: R$ 156,8 mil'},
  ],
  'reg-vol':[
-  {label:'Top Eletivo do Período', value:'187', delta:'Histerectomia c/ Anexectomia Uni.', cls:'neutral', color:'teal', note:'Soma Mai+Jun+Jul'},
-  {label:'Maior Crescimento · Eletivos', value:'+277,8%', delta:'Reparo Artroscópico do Manguito', cls:'up', color:'green', note:'18 → 68 (Mai → Jul)'},
-  {label:'Menor Crescimento · Eletivos', value:'+9,1%', delta:'Hipertrofia Mamária (todos cresceram)', cls:'neutral', color:'amber', note:'22 → 24 (Mai → Jul)'},
-  {label:'Maior Queda · Urgência', value:'-27,7%', delta:'Taxa de Refeição de Acompanhante', cls:'down', color:'red', note:'65 → 47 (Mai → Jul)'},
-  {label:'Tomografia · Jul', value:'226', delta:'-10,7% vs Junho (253)', cls:'down', color:'teal', note:'Fundação lidera com 91'},
+  {label:'Top Eletivo do Período', value:'174', delta:'Histerectomia c/ Anexectomia Uni.', cls:'neutral', color:'teal', note:'Soma Jun+Jul+Ago'},
+  {label:'Maior Crescimento · Urgência', value:'+47,1%', delta:'Desbridamento Cirúrgico de Feridas', cls:'up', color:'green', note:'17 → 25 (Jun → Ago)'},
+  {label:'Maior Queda · Urgência', value:'-58,8%', delta:'Acesso Central em Urgência', cls:'down', color:'red', note:'51 → 21 (Jun → Ago)'},
+  {label:'Tomografia · Ago', value:'155', delta:'-31,4% vs Julho (226)', cls:'down', color:'teal', note:'Fundação lidera com 27'},
+  {label:'Solicitações Eletivas · Prestador', value:'777', delta:'Hospital Renascença lidera (169)', cls:'neutral', color:'blue', note:'Top Solicitações por Prestador'},
  ],
  'con-prod':[
-  {label:'Total de Internados · Jul', value:'609', delta:'528 elegíveis (>3 dias) · 86,7%', cls:'neutral', color:'teal', note:'Auditoria concorrente'},
-  {label:'Visitas Realizadas · Jul', value:'1.413', delta:'2,64 visitas/paciente elegível', cls:'up', color:'blue', note:'Recorde do ano · +14,9% vs Junho'},
-  {label:'Melhor Cobertura', value:'4,59', delta:'Hospital do Coração', cls:'up', color:'green', note:'Visitas por paciente elegível'},
-  {label:'Menor Cobertura', value:'2,19', delta:'Hospital Renascença', cls:'down', color:'amber', note:'Visitas por paciente elegível'},
-  {label:'Visitas Médica · Jul', value:'477', delta:'+25,2% vs Junho (381)', cls:'up', color:'teal', note:'5 auditores · Ana Carolina entra na equipe'},
+  {label:'Total de Internados · Ago', value:'652', delta:'538 elegíveis (>3 dias)', cls:'neutral', color:'teal', note:'Auditoria concorrente'},
+  {label:'Visitas Realizadas · Ago', value:'1.229', delta:'-13,0% vs Julho (1.413)', cls:'down', color:'blue', note:'2,28 visitas/paciente elegível'},
+  {label:'Melhor Cobertura', value:'3,70', delta:'Hospital do Coração', cls:'up', color:'green', note:'Visitas por paciente elegível'},
+  {label:'Menor Cobertura', value:'1,81', delta:'Hospital Renascença', cls:'down', color:'amber', note:'Visitas por paciente elegível'},
+  {label:'Visitas Médica · Ago', value:'455', delta:'-4,6% vs Julho (477)', cls:'down', color:'teal', note:'André Lucas entra na equipe · Pedro substitui Dr. Italo'},
  ],
  'con-des':[
-  {label:'Visitas no Acumulado', value:'8.929', delta:'Média de 1.276/mês', cls:'neutral', color:'teal', note:'Janeiro a Julho/2026'},
-  {label:'Dentro do Prazo', value:'88,0%', delta:'Visitas realizadas no SLA', cls:'up', color:'green', note:'Acumulado de 7 meses'},
-  {label:'Em Atraso · Jul', value:'11,5%', delta:'163 atrasos em julho', cls:'warn', color:'amber', note:'↑ 2,5 p.p. vs Junho (9%)'},
-  {label:'TMP Enfermaria Crítico', value:'52 dias', delta:'São Marcelo e Recomeçar', cls:'down', color:'red', note:'Ultrapassaram o limite de 50 dias'},
-  {label:'TMP UTI Crítico', value:'17 dias', delta:'Hospital Renascença', cls:'down', color:'amber', note:'Meta interna: 5–10 dias'},
+  {label:'Visitas no Acumulado', value:'10.158', delta:'Média de 1.270/mês', cls:'neutral', color:'teal', note:'Janeiro a Agosto/2026'},
+  {label:'Dentro do Prazo', value:'88,2%', delta:'Visitas realizadas no SLA', cls:'up', color:'green', note:'Acumulado de 8 meses'},
+  {label:'Em Atraso · Ago', value:'10,0%', delta:'124 atrasos em agosto', cls:'up', color:'green', note:'↓ 1,5 p.p. vs Julho (11,5%)'},
+  {label:'TMP Enfermaria Crítico', value:'49 dias', delta:'Recomeçar', cls:'up', color:'amber', note:'Volta a ficar dentro do limite diferenciado de 50 dias (era 52 em julho)'},
+  {label:'TMP UTI Crítico', value:'19 dias', delta:'Hospital Cirurgia', cls:'down', color:'amber', note:'Meta interna: 5–10 dias'},
  ],
  'retro-prod':[
-  {label:'Contas Auditadas · Jul', value:'7.744', delta:'-19,3% vs Junho (9.601)', cls:'down', color:'teal', note:'14 enfermeiros auditores'},
-  {label:'Recursos Apresentados · Jul', value:'517', delta:'-1,0% vs Junho (522)', cls:'up', color:'green', note:'Volume estável em base menor'},
-  {label:'Índice de Recursos (%)', value:'6,68%', delta:'↑ vs 5,44% em Junho', cls:'down', color:'amber', note:'Piora na qualidade de faturamento'},
-  {label:'Maior Retrabalho', value:'71,43%', delta:'Hospital do Coração', cls:'down', color:'red', note:'80 recursos em 112 contas'},
-  {label:'Maior Crescimento', value:'+155,6%', delta:'Avosos', cls:'up', color:'purple', note:'Junho → Julho'},
+  {label:'Contas Auditadas · Ago', value:'8.607', delta:'+11,1% vs Julho (7.744)', cls:'up', color:'teal', note:'14 enfermeiros auditores'},
+  {label:'Recursos Apresentados · Ago', value:'589', delta:'+13,9% vs Julho (517)', cls:'down', color:'amber', note:'Volume cresce junto com a base'},
+  {label:'Índice de Recursos (%)', value:'6,84%', delta:'↑ vs 6,68% em Julho', cls:'down', color:'amber', note:'Leve piora na qualidade de faturamento'},
+  {label:'Maior Retrabalho', value:'36,16%', delta:'Hospital do Coração', cls:'up', color:'amber', note:'64 recursos em 177 contas · forte melhora vs 71,43% em julho'},
+  {label:'Maior Crescimento', value:'+245,1%', delta:'San Giovanni', cls:'up', color:'purple', note:'51 → 176 contas (Julho → Agosto)'},
  ],
 };
 
@@ -1520,34 +1467,34 @@ const initFns = {};
 
 initFns['overview'] = function(){
   table('ovAtencaoTable', ['Área','Indicador','Prestador/Responsável','Valor','Ação recomendada'], [
-    {cells:['Retrospectiva','Índice de retrabalho fora do padrão','Hospital do Coração','<b style="color:var(--red)">71,43%</b> (80 recursos em 112 contas)','Auditoria de causa-raiz imediata — maior desvio do relatório'], alert:true},
-    {cells:['Concorrente · Desempenho','TMP Enfermaria acima do limite diferenciado','São Marcelo e Recomeçar','<b style="color:var(--red)">52 dias</b> (limite 50; eram 42 e 45 em junho)','Ambos cruzaram o limite no mesmo mês — revisar critério de alta'], alert:true},
-    {cells:['Regulação · Produtividade','Guias SADT não periciadas','Setor de Perícia','<b style="color:var(--red)">1.344 guias</b> (↑ 77,1% vs junho)','Priorizar fila de pendências antes do fechamento de agosto'], alert:true},
-    {cells:['Regulação · Produtividade','Queda persistente em análises IPESCARDIO','Alexandre Duarte Costa','<b style="color:var(--amber)">84 → 65 → 40</b> (-52,4% em dois meses)','Confirmar se há redistribuição de carga entre os 3 auditores do projeto']},
-    {cells:['Concorrente · Desempenho','TMP Enfermaria acima da meta geral','Hospital Primavera','<b style="color:var(--amber)">42 dias</b> (meta 3–5; subiu de 32 em junho)','Auditoria pontual da causa de permanência prolongada']},
-    {cells:['Retrospectiva','Queda no volume de contas auditadas','Auditoria Retrospectiva','<b style="color:var(--amber)">7.744</b> (-19,3% vs junho)','Confirmar se houve mudança de escopo ou represamento']},
-    {cells:['Regulação · Desempenho','Curativos sem dados no mês','Regulação','<b style="color:var(--text-dim)">Não fornecido</b>','Retomar coleta para não perder a série de custo evitado']},
+    {cells:['Regulação · Produtividade','Guias SADT não periciadas','Setor de Perícia','<b style="color:var(--red)">1.636 guias</b> (↑ 21,7% vs julho)','Priorizar fila de pendências antes do fechamento de setembro'], alert:true},
+    {cells:['Concorrente · Produtividade','Baixa elegibilidade para auditoria concorrente','Hospital São Lucas','<b style="color:var(--red)">26%</b> dos internados (>3 dias) — demais prestadores entre 76%-96%','Confirmado pelo setor; acompanhar se o padrão se mantém em setembro'], alert:true},
+    {cells:['Retrospectiva','Salto grande em reversões de guias SADT/cirurgias','Regulação · Produtividade','<b style="color:var(--amber)">1.662 → 4.082</b> (+145,6% vs julho)','Confirmar com o setor se o salto reflete represamento resolvido ou mudança de processo']},
+    {cells:['Retrospectiva','Total de contas por auditor não fecha com o total geral','Auditoria Retrospectiva','<b style="color:var(--amber)">8.430 informado vs 8.607 do total geral</b> (diferença de 177 contas)','Confirmar com Tayná a que auditor(a) pertence a diferença']},
+    {cells:['Regulação · Desempenho','Base de SLA Eletivos menor que o total de solicitações','Regulação · Desempenho','<b style="color:var(--amber)">641 de 777 guias</b> classificadas por faixa de prazo','Confirmar com o setor a que corresponde a diferença de 136 guias']},
+    {cells:['Regulação · Desempenho','Curativos sem dados no mês','Regulação','<b style="color:var(--text-dim)">Não fornecido (2º mês seguido)</b>','Retomar coleta para não perder a série de custo evitado']},
+    {cells:['Concorrente · Desempenho','TMP Enfermaria — Recomeçar volta ao limite','Recomeçar','<b style="color:var(--green)">49 dias</b> (limite diferenciado 50; era 52 em julho)','Sem ação — monitorar continuidade da melhora']},
   ]);
 };
 
 initFns['reg-prod'] = function(){
-  hBar('rpGeral', ['Guias Solicitadas','Guias Periciadas','Guias Não Periciadas'], [11923,10579,1344],
+  hBar('rpGeral', ['Guias Solicitadas','Guias Periciadas','Guias Não Periciadas'], [12689,11053,1636],
     [COLORS.blue, COLORS.green, COLORS.amber], {dsize:12, lfont:11.5});
 
-  const reversao = [['Automação (T.I.)',2291],['Vitória',78],['Isabela',66],['Augusta',7],['Filipe',7],['André Luiz',7],['Daniela',4],['Waneska',2],['Ana Angélica',1]];
+  const reversao = [['Automação (T.I.)',2216],['Lycia',1240],['André Luiz',178],['Isabela',170],['Augusta',114],['Tamires',56],['Vitória',49],['Bruno',29],['Rodrigo',15],['Filipe',7],['Daniela',6],['Waneska',2]];
   hBar('rpReversao', reversao.map(r=>r[0]), reversao.map(r=>r[1]), COLORS.blue, {dsize:10});
 
   // Produtividade individual: perícias SADT + reversões de guias de cirurgias/procedimentos.
   // Ordenado pela PRODUÇÃO TOTAL (soma das duas colunas), decrescente.
   // Augusta e Rodrigo atuaram somente em reversões; Marcela, Gabriel, Fernando, João e Carlos
   // somente em perícias — por isso aparecem com 0 numa das colunas.
-  const sadt = [['Ana Angélica Dantas',1824,26],['Marcela Fernandes M. Amaral',1751,0],
-    ['André Luiz Viegas M. de Araújo',1298,291],['Waneska de Souza Barboza',1510,4],
-    ['Lycia Gardênia dos Santos',200,1247],['Gabriel Couto Senra',1321,0],
-    ['Fernando Couto Senra',1201,0],['João Oliveira Deda',745,0],
-    ['Carlos Augusto M. Santos Filho',662,0],['Augusta Maria Dantas Guimarães',0,81],
-    ['Vitória Neves de Jesus',41,1],['Filipe Matheus Barros de Araujo Freire',26,7],
-    ['Rodrigo Ribeiro de Almeida',0,5]];
+  const sadt = [['Marcela Fernandes M. Amaral',1757,0],['João Oliveira Deda',1675,0],
+    ['Gabriel Couto Senra',1600,0],['Waneska de Souza Barboza',1357,1],
+    ['André Luiz Viegas M. de Araújo',1343,172],['Ana Angélica Dantas',1441,0],
+    ['Fernando Couto Senra',963,0],['Lycia Gardênia dos Santos',174,1240],
+    ['Carlos Augusto M. Santos Filho',690,0],['Augusta Maria Dantas Guimarães',0,105],
+    ['Filipe Matheus Barros de Araujo Freire',22,2],['Vitória Neves de Jesus',16,0],
+    ['Rodrigo Ribeiro de Almeida',0,6]];
   // Cores em matizes complementares para máximo contraste entre as duas atividades:
   // azul (#5b9dff) para perícias e âmbar (#f5b342) para reversões. Vermelho segue
   // reservado exclusivamente a alertas, por isso não é usado aqui.
@@ -1559,10 +1506,10 @@ initFns['reg-prod'] = function(){
   // A partir de julho/2026, a média de guias/hora passa a usar a CARGA HORÁRIA MENSAL informada
   // pelo setor (ex.: Marcela 80h/mês), em vez de horas/dia × turnos trabalhados. O turno segue
   // exibido no rótulo apenas como informação de contexto, sem entrar mais no cálculo.
-  const guiasHoraLabels = ['Carlos Augusto M.S. Filho · 2h/dia - 19 turnos · 24h/mês','Ana Angélica Dantas · 6,5h/dia - 15 turnos · 80h/mês','Gabriel Couto Senra · 4h/dia - 22 turnos · 60h/mês',
-    'Marcela F. M. Amaral · 6,5h/dia - 13 turnos · 80h/mês','Waneska de Souza Barboza · 5h/dia - 17 turnos · 80h/mês','André Luiz V. M. Araújo · 4h/dia - 22 turnos · 80h/mês',
-    'Fernando Couto Senra · 4h/dia - 22 turnos · 80h/mês','João Oliveira Deda · 5h/dia - 9 turnos · 80h/mês'];
-  const guiasHoraData = [27.58,22.80,22.02,21.89,18.88,16.23,15.01,9.31];
+  const guiasHoraLabels = ['Gabriel Couto Senra · 4h/dia - 60h/mês','Marcela F. M. Amaral · 6,5h/dia - 80h/mês','Carlos Augusto M.S. Filho · 2h/dia - 32h/mês',
+    'João Oliveira Deda · 5h/dia - 80h/mês','Ana Angélica Dantas · 6,5h/dia - 80h/mês','Waneska de Souza Barboza · 5h/dia - 80h/mês',
+    'André Luiz V. M. Araújo · 4h/dia - 80h/mês','Fernando Couto Senra · 4h/dia - 80h/mês'];
+  const guiasHoraData = [26.67,21.96,21.56,20.94,18.01,16.96,16.79,12.04];
   const guiasHoraColors = guiasHoraData.map(v=> v>=20 ? COLORS.green : v>=18 ? COLORS.amber : COLORS.orange);
   hBar('rpGuiasHora', guiasHoraLabels, guiasHoraData, COLORS.blue, {colors:guiasHoraColors, dsize:11, lfont:11});
 
@@ -1584,48 +1531,48 @@ initFns['reg-prod'] = function(){
     {cells:['Augusta Maria Dantas Guimaraes','Enf','6','22','1,80']},
   ]);
 
-  table('rpIpescardioTable', ['Auditor','Maio','Junho','Julho'], [
-    {cells:['Alexandre Duarte Costa','84','65','<b>40</b>']},
-    {cells:['José Augusto Soares Barreto Filho','11','27','<b>22</b>']},
-    {cells:['Roberto Cintra de Azevedo Aragão','25','13','<b>14</b>']},
-    {cells:['<b style="color:var(--text)">Total</b>','<b>120</b>','<b>105</b>','<b style="color:var(--teal)">76</b>'], total:true},
+  table('rpIpescardioTable', ['Auditor','Junho','Julho','Agosto'], [
+    {cells:['Alexandre Duarte Costa','65','40','<b>50</b>']},
+    {cells:['José Augusto Soares Barreto Filho','27','22','<b>19</b>']},
+    {cells:['Roberto Cintra de Azevedo Aragão','13','14','<b>22</b>']},
+    {cells:['<b style="color:var(--text)">Total</b>','<b>105</b>','<b>76</b>','<b style="color:var(--teal)">91</b>'], total:true},
   ]);
 };
 
 initFns['reg-des'] = function(){
-  hBar('rdEntrada', ['Ortopedia','Oncológicos','Programa da Dor','VHD/VHC · Histeroscopia','Herniorrafia','Colecistectomia','Cateterismo','Urologia','Colonoscopia/Endoscopia','Neuro, Coluna, Cabeça e Pescoço'],
-    [111,51,46,44,40,35,33,28,27,27], COLORS.blue, {dsize:10});
+  hBar('rdEntrada', ['Ortopedia','Histerectomia Total','Herniorrafia','Colecistectomia','VHD/VHC · Histeroscopia','Colonoscopia/Endoscopia','Cateterismo','Oncológicos','Urologia','Varizes'],
+    [100,52,47,43,41,40,38,35,35,29], COLORS.blue, {dsize:10});
 
-  table('rdEntradaVarTable', ['Especialidade','Junho','Julho','Variação'], [
-    {cells:['<b style="color:var(--text)">Ortopedia</b>','77','<b>111</b>', vspan('+44,2%')]},
-    {cells:['<b style="color:var(--text)">Colecistectomia</b>','26','<b>35</b>', vspan('+34,6%')]},
-    {cells:['<b style="color:var(--text)">Colonoscopia/Endoscopia</b>','21','<b>27</b>', vspan('+28,6%')]},
-    {cells:['<b style="color:var(--text)">Oncológicos</b>','40','<b>51</b>', vspan('+27,5%')]},
-    {cells:['<b style="color:var(--text)">VHD/VHC · Histeroscopia</b>','36','<b>44</b>', vspan('+22,2%')]},
-    {cells:['<b style="color:var(--text)">Herniorrafia</b>','37','<b>40</b>', vspan('+8,1%')]},
-    {cells:['<b style="color:var(--text)">Urologia</b>','27','<b>28</b>', vspan('+3,7%')]},
-    {cells:['<b style="color:var(--text)">Cateterismo</b>','32','<b>33</b>', vspan('+3,1%')]},
-    {cells:['<b style="color:var(--text)">Programa da Dor</b>','49','<b>46</b>', vspan('-6,1%')]},
-    {cells:['<b style="color:var(--text)">Histerectomia Total</b>','32','<b>25</b>', vspan('-21,9%')], alert:true},
+  table('rdEntradaVarTable', ['Especialidade','Julho','Agosto','Variação'], [
+    {cells:['<b style="color:var(--text)">Ortopedia</b>','111','<b>100</b>', vspan('-9,9%')]},
+    {cells:['<b style="color:var(--text)">Histerectomia Total</b>','25','<b>52</b>', vspan('+108,0%')]},
+    {cells:['<b style="color:var(--text)">Colecistectomia</b>','35','<b>43</b>', vspan('+22,9%')]},
+    {cells:['<b style="color:var(--text)">VHD/VHC · Histeroscopia</b>','44','<b>41</b>', vspan('-6,8%')]},
+    {cells:['<b style="color:var(--text)">Herniorrafia</b>','40','<b>47</b>', vspan('+17,5%')]},
+    {cells:['<b style="color:var(--text)">Cateterismo</b>','33','<b>38</b>', vspan('+15,2%')]},
+    {cells:['<b style="color:var(--text)">Oncológicos</b>','51','<b>35</b>', vspan('-31,4%')], alert:true},
+    {cells:['<b style="color:var(--text)">Urologia</b>','28','<b>35</b>', vspan('+25,0%')]},
+    {cells:['<b style="color:var(--text)">Programa da Dor</b>','46','<b>23</b>', vspan('-50,0%')], alert:true},
   ]);
 
   const prestData = [
-    ['Hospital Primavera',149,119,177],
-    ['DECOS',138,137,170],
-    ['Clínica Renascença',118,106,148],
-    ['São Lucas',87,62,77],
-    ['Santa Helena',26,24,65],
-    ['Angiocor',62,69,54],
-    ['Fundação Beneficência',63,36,35],
-    ['Hospital do Coração',9,49,23],
-    ['Hospital Santa Izabel',15,8,4]];
+    ['Hospital Primavera',119,177,164],
+    ['DECOS',137,170,160],
+    ['Clínica Renascença',106,148,169],
+    ['São Lucas',62,77,82],
+    ['Santa Helena',24,65,39],
+    ['Angiocor',69,54,52],
+    ['Fundação Beneficência',36,35,40],
+    ['Hospital do Coração',49,23,62],
+    ['Hospital Santa Izabel',8,4,8],
+    ['Hospital São José',null,null,1]];
   stackedBar('rdPrestadores', prestData.map(r=>r[0]),
-    [{label:'Maio', data:prestData.map(r=>r[1]), color:COLORS.m1},
-     {label:'Junho', data:prestData.map(r=>r[2]), color:COLORS.m2},
-     {label:'Julho', data:prestData.map(r=>r[3]), color:COLORS.m3}],
-    {lfont:11, suffixByIndex:['23,5% jul','22,6% jul','19,7% jul','10,2% jul','8,6% jul','7,2% jul','4,6% jul','3,1% jul','0,5% jul']});
+    [{label:'Junho', data:prestData.map(r=>r[1]||0), color:COLORS.m1},
+     {label:'Julho', data:prestData.map(r=>r[2]||0), color:COLORS.m2},
+     {label:'Agosto', data:prestData.map(r=>r[3]||0), color:COLORS.m3}],
+    {lfont:11, suffixByIndex:['21,1% ago','20,6% ago','21,8% ago','10,6% ago','5,0% ago','6,7% ago','5,1% ago','8,0% ago','1,0% ago','0,1% ago']});
 
-  const periciaMeses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho'];
+  const periciaMeses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto'];
   const periciaDetalhe = [
     ['Janeiro',35,33,27,24],
     ['Fevereiro',13,8,25,24],
@@ -1634,6 +1581,7 @@ initFns['reg-des'] = function(){
     ['Maio',40,35,32,30],
     ['Junho',39,30,25,22],
     ['Julho',36,29,37,31],
+    ['Agosto',30,27,45,39],
   ];
   const periciaAusenciaPct = periciaDetalhe.map(([mes,cm,cr,mm,mr])=>{
     const totM = cm+mm, totR = cr+mr;
@@ -1677,9 +1625,9 @@ initFns['reg-des'] = function(){
     [12,514,55,185,18], eletivoPrazoColors, {cutout:'55%', externalLabels:true, padX:48, padY:16});
 
   const urgenciaPrazoColors = [COLORS.green, COLORS.amber];
-  doughnut('rdSlaUrgenciaAbril', ['< 3 dias','≥ 3 dias'], [925,189], urgenciaPrazoColors, {cutout:'60%', externalLabels:true, padX:55, padY:14});
-  doughnut('rdSlaUrgenciaMaio', ['< 3 dias','≥ 3 dias'], [918,270], urgenciaPrazoColors, {cutout:'60%', externalLabels:true, padX:55, padY:14});
-  doughnut('rdSlaUrgenciaJunho', ['< 3 dias','≥ 3 dias'], [974,199], urgenciaPrazoColors, {cutout:'60%', externalLabels:true, padX:55, padY:14});
+  doughnut('rdSlaUrgenciaAbril', ['< 3 dias','≥ 3 dias'], [918,270], urgenciaPrazoColors, {cutout:'60%', externalLabels:true, padX:55, padY:14});
+  doughnut('rdSlaUrgenciaMaio', ['< 3 dias','≥ 3 dias'], [974,199], urgenciaPrazoColors, {cutout:'60%', externalLabels:true, padX:55, padY:14});
+  doughnut('rdSlaUrgenciaJunho', ['< 3 dias','≥ 3 dias'], [876,195], urgenciaPrazoColors, {cutout:'60%', externalLabels:true, padX:55, padY:14});
 
   doughnut('rdTaviRate', ['Concluída','Perícia Negada'], [5,2], [COLORS.green, COLORS.red], {legendPos:'bottom', cutout:'70%'});
 
@@ -1691,8 +1639,10 @@ initFns['reg-des'] = function(){
     {cells:['2026217935','26/03/2026','24/04/2026','Angiocor','<span class="pill ok">Concluída</span>','André Bastos Paixão','Roberto Cintra','Eletivo']},
     {cells:['2026225197','15/05/2026','13/05/2026','Hospital do Coração','<span class="pill ok">Concluída</span>','Otávio A. O. Aragão','Alexandre Duarte','Urgência']},
     {cells:['2026230390','12/06/2026','22/06/2026','Hospital do Coração','<span class="pill ok">Concluída</span>','Lawrence A. Araujo','José Augusto','Urgência']},
+    {cells:['2026239964','13/08/2026','<span style="color:var(--text-faint)">Pendente</span>','Angiocor','<span class="pill" style="background:rgba(245,179,66,0.15); color:var(--amber)">Aguardando Guia</span>','Naelson Fonseca Costa','Roberto Cintra','Eletivo'], alert:true},
   ]);
 
+  // Sem dados de Curativos em Julho e Agosto — mantém o último acumulado disponível (até Junho/2026).
   groupedBar('rdCurativos', ['Tratamento','Prevenção'],
     [{label:'Valor Solicitado', data:[249998.74,136411.84], color:COLORS.blue},
      {label:'Valor Liberado', data:[115524.39,114038.97], color:COLORS.amber},
@@ -1725,6 +1675,11 @@ initFns['reg-vol'] = function(){
     'Turbinectomia/Turbinoplastia Unilateral': '3.05.01.458',
     'Varizes - Trat. Cirúrgico Bilateral': '3.09.07.136',
     'Implante Cateter Venoso Central': '3.09.13.012',
+    'Ressecção Lateral da Clavícula': '3.07.35.084',
+    'Colecistectomia s/ Colangiografia (II)': '3.10.05.128',
+    'Herniorrafia Inguinal Unilateral': '3.10.09.115',
+    'Ressecção Endoscópica da Próstata': '0.92.95.0409',
+    'Reparo ou Sutura de Menisco': '3.07.33.065',
     // Top 20 Urgência
     'Internação Hospitalar (Regulação)': '0.91.08.0029',
     'TC sem Contraste': '0.92.20.0010',
@@ -1747,16 +1702,16 @@ initFns['reg-vol'] = function(){
     'Angiografia Cateterismo Seletivo': '4.08.12.049',
   };
   const eletivosData20 = [
-    ['Histerectomia c/ anexectomia uni.',45,62,80],['Histerectomia c/ anexectomia',46,61,72],
-    ['Reparo Artroscópico Manguito',18,24,68],['Acromioplastia',19,24,66],
-    ['VHD - Cirurgia Eletiva',30,31,45],['Colecistectomia s/ Colangiografia',28,21,57],
-    ['Cateterismo Cardíaco (Adulto)',29,36,34],['Cateterismo Cardíaco (Pacote)',29,36,34],
-    ['Cateterismo Cardíaco E/D',28,33,37],['Vídeo Histeroscopia Diagnóstica',22,30,43],
-    ['Radioscopia p/ Acompanhamento',25,30,36],['Biópsia do Endométrio',22,29,38],
-    ['Artroplastia Total de Joelho',20,23,44],['Coluna: Infiltração Foraminal',23,17,46],
-    ['Herniorrafia Umbilical',17,25,44],['Turbinectomia Unilateral (Pacote)',25,18,33],
-    ['Turbinectomia/Turbinoplastia Unilateral',25,18,31],['Hipertrofia Mamária Unilateral',22,27,24],
-    ['Ressecção Lateral da Clavícula',15,11,47],['Ressecção Endoscópica da Próstata',14,25,27]];
+    ['Histerectomia c/ anexectomia uni.',61,63,50],['Histerectomia c/ anexectomia',60,56,51],
+    ['Reparo Artroscópico Manguito',24,42,25],['Acromioplastia',24,41,25],
+    ['Cateterismo Cardíaco (Adulto)',31,25,20],['Cateterismo Cardíaco (Pacote)',31,25,19],
+    ['VHD - Cirurgia Eletiva',25,21,29],['Vídeo Histeroscopia Diagnóstica',25,20,29],
+    ['Cateterismo Cardíaco E/D',29,26,19],['Biópsia do Endométrio',24,18,28],
+    ['Colecistectomia s/ Colangiografia',20,30,20],['Ressecção Lateral da Clavícula',11,31,20],
+    ['Herniorrafia Umbilical',24,21,17],['Radioscopia p/ Acompanhamento',20,10,24],
+    ['Colecistectomia s/ Colangiografia (II)',14,20,15],['Herniorrafia Inguinal Unilateral',15,19,15],
+    ['Ressecção Endoscópica da Próstata',15,17,16],['Trat. Cirúrgico Varizes Bilateral',21,14,13],
+    ['Coluna: Infiltração Foraminal',13,13,22],['Reparo ou Sutura de Menisco',8,23,15]];
   const rvEleVariacao = eletivosData20.map(d=> d[1] ? (d[3]-d[1])/d[1]*100 : null);
   const rvEleSorted = [...rvEleVariacao].filter(v=>v!==null).sort((a,b)=>b-a);
   const rvEleTop2 = new Set(rvEleSorted.slice(0,2));
@@ -1768,20 +1723,20 @@ initFns['reg-vol'] = function(){
     return '#8f8f9e';
   });
   stackedBar('rvEletivos', eletivosData20.map(d=>d[0]),
-    [{label:'Maio', data:eletivosData20.map(d=>d[1]), color:COLORS.m1},
-     {label:'Junho', data:eletivosData20.map(d=>d[2]), color:COLORS.m2},
-     {label:'Julho', data:eletivosData20.map(d=>d[3]), color:COLORS.m3}],
+    [{label:'Junho', data:eletivosData20.map(d=>d[1]), color:COLORS.m1},
+     {label:'Julho', data:eletivosData20.map(d=>d[2]), color:COLORS.m2},
+     {label:'Agosto', data:eletivosData20.map(d=>d[3]), color:COLORS.m3}],
     {lfont:9.5, codes:procedureCodes, labelColors:rvEleLabelColors});
 
   const urgenciaData20 = [
-    ['Internação Hospitalar (Regulação)',312,307,316],['TC sem Contraste',153,182,168],
-    ['TC Tórax',83,91,85],['TC Crânio/Sela',70,96,87],['Implante Cateter Venoso Central',69,92,83],
-    ['TC Abdome Total',53,75,66],['Internação Hospitalar',61,51,78],['TC com Contraste',45,79,63],
-    ['Taxa Refeição Acompanhante',65,67,47],['Diário de Acompanhamento',53,56,42],['Parto Cesáreo (Enfermaria)',44,46,32],
-    ['Cesariana Feto Único/Múltiplo',43,46,32],['Endoscopia Digestiva Alta',39,42,36],['Acesso Central em Urgência',22,51,38],
-    ['Endoscopia Digestiva Alta (II)',29,35,30],['Colocação de Cateter Venoso Central',15,40,21],
-    ['Desbridamento Cirúrgico de Feridas',26,17,25],['Visitas Subsequentes (Acompanh.)',14,30,21],
-    ['Angiografia Cateterismo Não Seletivo',13,22,20],['Angiografia Cateterismo Seletivo',10,22,22]];
+    ['Internação Hospitalar (Regulação)',307,316,320],['TC sem Contraste',182,163,126],
+    ['TC Tórax',91,85,59],['TC Crânio/Sela',96,84,59],['Implante Cateter Venoso Central',92,83,71],
+    ['TC Abdome Total',75,62,46],['Internação Hospitalar',51,78,51],['TC com Contraste',79,61,35],
+    ['Taxa Refeição Acompanhante',67,47,62],['Diário de Acompanhamento',56,42,47],['Parto Cesáreo (Enfermaria)',46,32,27],
+    ['Cesariana Feto Único/Múltiplo',46,32,27],['Endoscopia Digestiva Alta',42,36,25],['Acesso Central em Urgência',51,38,21],
+    ['Endoscopia Digestiva Alta (II)',35,30,21],['Colocação de Cateter Venoso Central',40,20,21],
+    ['Desbridamento Cirúrgico de Feridas',17,25,25],['Visitas Subsequentes (Acompanh.)',30,21,30],
+    ['Angiografia Cateterismo Não Seletivo',22,20,24],['Angiografia Cateterismo Seletivo',22,22,24]];
   const rvUrgVariacao = urgenciaData20.map(d=> d[1] ? (d[3]-d[1])/d[1]*100 : null);
   const rvUrgSorted = [...rvUrgVariacao].filter(v=>v!==null).sort((a,b)=>b-a);
   const rvUrgTop2 = new Set(rvUrgSorted.slice(0,2));
@@ -1793,242 +1748,207 @@ initFns['reg-vol'] = function(){
     return '#8f8f9e';
   });
   stackedBar('rvUrgencia', urgenciaData20.map(d=>d[0]),
-    [{label:'Maio', data:urgenciaData20.map(d=>d[1]), color:COLORS.m1},
-     {label:'Junho', data:urgenciaData20.map(d=>d[2]), color:COLORS.m2},
-     {label:'Julho', data:urgenciaData20.map(d=>d[3]), color:COLORS.m3}],
+    [{label:'Junho', data:urgenciaData20.map(d=>d[1]), color:COLORS.m1},
+     {label:'Julho', data:urgenciaData20.map(d=>d[2]), color:COLORS.m2},
+     {label:'Agosto', data:urgenciaData20.map(d=>d[3]), color:COLORS.m3}],
     {lfont:9, codes:procedureCodes, labelColors:rvUrgLabelColors});
 
   groupedBar('rvTomo', ['Fundação','Renascença','Primavera','Santa Izabel','Hospital do Coração','São Lucas'],
-    [{label:'Maio', data:[64,57,32,33,0,4], color:COLORS.m1},
-     {label:'Junho', data:[83,74,28,46,9,13], color:COLORS.m2},
-     {label:'Julho', data:[91,52,30,24,21,8], color:COLORS.m3}], {dsize:9});
+    [{label:'Junho', data:[83,74,28,46,9,13], color:COLORS.m1},
+     {label:'Julho', data:[91,52,30,24,21,8], color:COLORS.m2},
+     {label:'Agosto', data:[27,45,31,27,18,7], color:COLORS.m3}], {dsize:9});
 
-  table('rvTomoTable', ['Prestador','Mai→Jun','Jun→Jul','3º Tri (Mai–Jul)'], [
-    {cells:['<b style="color:var(--text)">Fundação</b>', vspan('+29,7%'), vspan('+9,6%'), vspan('+42,2%')]},
-    {cells:['<b style="color:var(--text)">Renascença</b>', vspan('+29,8%'), vspan('-29,7%'), vspan('-8,8%')]},
-    {cells:['<b style="color:var(--text)">Primavera</b>', vspan('-12,5%'), vspan('+7,1%'), vspan('-6,3%')]},
-    {cells:['<b style="color:var(--text)">Santa Izabel</b>', vspan('+39,4%'), vspan('-47,8%'), vspan('-27,3%')]},
-    {cells:['<b style="color:var(--text)">Hospital do Coração</b>', vspan('— (sem base)'), vspan('+133,3%'), vspan('— (sem base)')]},
-    {cells:['<b style="color:var(--text)">São Lucas</b>', vspan('+225%'), vspan('-38,5%'), vspan('+100%')]},
+  table('rvTomoTable', ['Prestador','Jun→Jul','Jul→Ago','3º Tri (Jun–Ago)'], [
+    {cells:['<b style="color:var(--text)">Fundação</b>', vspan('+9,6%'), vspan('-70,3%'), vspan('-67,5%')], alert:true},
+    {cells:['<b style="color:var(--text)">Renascença</b>', vspan('-29,7%'), vspan('-13,5%'), vspan('-39,2%')], alert:true},
+    {cells:['<b style="color:var(--text)">Primavera</b>', vspan('+7,1%'), vspan('+3,3%'), vspan('+10,7%')]},
+    {cells:['<b style="color:var(--text)">Santa Izabel</b>', vspan('-47,8%'), vspan('+12,5%'), vspan('-41,3%')]},
+    {cells:['<b style="color:var(--text)">Hospital do Coração</b>', vspan('+133,3%'), vspan('-14,3%'), vspan('+100%')]},
+    {cells:['<b style="color:var(--text)">São Lucas</b>', vspan('-38,5%'), vspan('-12,5%'), vspan('-46,2%')]},
   ]);
 };
 
 initFns['con-prod'] = function(){
-  const cp = [['H. Coração',59,54,248,'4,59'],['Recomeçar',5,5,19,'3,80'],['H. Santa Isabel',88,78,240,'3,08'],
-    ['H. Primavera',115,102,240,'2,35'],['São Marcelo',27,17,40,'2,35'],['H. Cirurgia',162,146,333,'2,28'],['H. Renascença',153,126,276,'2,19']];
+  const cp = [['H. Coração',55,46,170,'3,70'],['São Marcelo',25,18,43,'2,39'],['H. Cirurgia',180,160,355,'2,22'],
+    ['H. Santa Isabel',83,76,185,'2,43'],['H. São Lucas',76,20,42,'2,10'],['H. Primavera',102,93,190,'2,04'],
+    ['H. Renascença',126,121,219,'1,81'],['Recomeçar',5,4,25,'6,25']];
   groupedBar('cpDesempenho', cp.map(r=>r[0]),
     [{label:'Internados', data:cp.map(r=>r[1]), color:COLORS.blue}, {label:'>3 dias', data:cp.map(r=>r[2]), color:COLORS.amber}, {label:'Visitas', data:cp.map(r=>r[3]), color:COLORS.teal}], {dsize:9});
+  // H. São Lucas: só 26% dos internados ficaram elegíveis (>3 dias) em agosto — muito abaixo dos demais (76%-96%). Confirmado pelo setor, sem indício de erro de digitação.
   table('cpTable', ['Prestador','Internados','>3 dias','Visitas','Visitas/Paciente'], cp.map(r=>({cells:[r[0],r[1],r[2],r[3],r[4]]})));
 
-  const enf = [['Edivanice',274,242,295,270,'↑ 53'],['Patricia',196,206,244,215,'↑ 38'],['Paula',236,224,218,226,'↓ 6'],
-    ['Ivanilda',140,157,179,159,'↑ 22'],['Renata *',12,20,0,11,'↓ 20']];
+  const enf = [['Edivanice',242,295,177,238,'↓ 65'],['Patricia',206,244,177,209,'↓ 29'],['Ivanilda',157,179,177,171,'↑ 20'],['Paula',224,218,229,224,'↑ 5']];
   groupedBar('cpEnfermagem', enf.map(r=>r[0]),
-    [{label:'Maio', data:enf.map(r=>r[1]), color:COLORS.m1}, {label:'Junho', data:enf.map(r=>r[2]), color:COLORS.m2}, {label:'Julho', data:enf.map(r=>r[3]), color:COLORS.m3}], {dsize:9});
-  table('cpEnfermagemTable', ['Auditora','Maio','Junho','Julho','Média 3M','Variação'], [
-    ...enf.map(r=>({cells:[r[0],r[1],r[2],r[3],`<b>${r[4]}</b>`,vspan(r[5])], alert: r[0].indexOf('*')>-1})),
-    {cells:['<b style="color:var(--text)">Total Equipe</b>','858','849','<b>936</b>','<b>881</b>',vspan('↑ 87')], total:true}]);
+    [{label:'Junho', data:enf.map(r=>r[1]), color:COLORS.m1}, {label:'Julho', data:enf.map(r=>r[2]), color:COLORS.m2}, {label:'Agosto', data:enf.map(r=>r[3]), color:COLORS.m3}], {dsize:9});
+  table('cpEnfermagemTable', ['Auditora','Junho','Julho','Agosto','Média 3M','Variação'], [
+    ...enf.map(r=>({cells:[r[0],r[1],r[2],r[3],`<b>${r[4]}</b>`,vspan(r[5])]})),
+    {cells:['<b style="color:var(--text)">Total Equipe</b>','829','936','<b>760</b>','<b>842</b>',vspan('↓ 69')], total:true}]);
+  // Renata deixou de aparecer nos dados de agosto — confirmar com Andreza se saiu da equipe.
 
-  const med = [['Samuel',155,173,159,162,'↓ 14'],['Ítalo',111,119,119,116,'— 0'],['Ana Carolina **','-','-',100,100,'novo'],
-    ['PJ Médicas Primavera',87,73,93,84,'↑ 20'],['André',9,16,6,10,'↓ 10']];
+  const med = [['Samuel',173,159,129,154,'↓ 44'],['PJ Médicas Primavera',73,93,86,84,'↑ 13'],
+    ['Ana Carolina',0,100,97,66,'↓ 3'],['André Lucas',16,6,5,9,'↓ 11'],['Pedro **','-','-',138,138,'novo · substitui Ítalo']];
   groupedBar('cpMedica', med.map(r=>r[0]),
-    [{label:'Maio', data:med.map(r=>r[1]==='-'?0:r[1]), color:COLORS.m1}, {label:'Junho', data:med.map(r=>r[2]==='-'?0:r[2]), color:COLORS.m2}, {label:'Julho', data:med.map(r=>r[3]), color:COLORS.m3}], {dsize:9});
-  table('cpMedicaTable', ['Auditor','Maio','Junho','Julho','Média 3M','Variação'], [
-    ...med.map(r=>({cells:[r[0],r[1],r[2],r[3],`<b>${r[4]}</b>`,vspan(r[5])]})),
-    {cells:['<b style="color:var(--text)">Total Equipe</b>','362','381','<b>477</b>','<b>407</b>',vspan('↑ 96')], total:true}]);
+    [{label:'Junho', data:med.map(r=>r[1]==='-'?0:r[1]), color:COLORS.m1}, {label:'Julho', data:med.map(r=>r[2]==='-'?0:r[2]), color:COLORS.m2}, {label:'Agosto', data:med.map(r=>r[3]), color:COLORS.m3}], {dsize:9});
+  table('cpMedicaTable', ['Auditor','Junho','Julho','Agosto','Média 3M','Variação'], [
+    ...med.map(r=>({cells:[r[0],r[1],r[2],r[3],`<b>${r[4]}</b>`,vspan(r[5])], alert: r[0].indexOf('*')>-1})),
+    {cells:['<b style="color:var(--text)">Total Equipe</b>','381','477','<b>455</b>','<b>438</b>',vspan('↑ 74')], total:true}]);
+  // Pedro entrou em 7/ago substituindo o Dr. Italo (mês parcial).
 };
 
 initFns['con-des'] = function(){
-  lineChart('cdEvolucao', ['janeiro/26','fevereiro/26','março/26','abril/26','maio/26','junho/26','julho/26'],
-    [{label:'Visitas realizadas', data:[1466,1185,1261,1154,1220,1230,1413], color:COLORS.blue}]);
+  lineChart('cdEvolucao', ['janeiro/26','fevereiro/26','março/26','abril/26','maio/26','junho/26','julho/26','agosto/26'],
+    [{label:'Visitas realizadas', data:[1466,1185,1261,1154,1220,1230,1413,1229], color:COLORS.blue}]);
 
-  lineChart('cdAtrasoLine', ['jan/26','fev/26','mar/26','abr/26','mai/26','jun/26','jul/26'],
-    [{label:'Índice de Atraso', data:[8,8,18,20,9,9,11.5], color:COLORS.red}], {suffix:'%', max:25});
+  lineChart('cdAtrasoLine', ['jan/26','fev/26','mar/26','abr/26','mai/26','jun/26','jul/26','ago/26'],
+    [{label:'Índice de Atraso', data:[8,8,18,20,9,9,11.5,10], color:COLORS.red}], {suffix:'%', max:25});
 
-  const atrasos = [113,98,232,237,108,121,163];
-  groupedBar('cdAtrasoBar', ['JAN','FEV','MAR','ABR','MAI','JUN','JUL'], [{label:'Atrasos', data:atrasos, color:COLORS.red}], {legend:false, dsize:11});
+  const atrasos = [113,98,232,237,108,121,163,124];
+  groupedBar('cdAtrasoBar', ['JAN','FEV','MAR','ABR','MAI','JUN','JUL','AGO'], [{label:'Atrasos', data:atrasos, color:COLORS.red}], {legend:false, dsize:11});
 
   // Meta diferenciada: São Marcelo e Recomeçar (perfil de longa permanência) = até 50 dias, ambos dentro da meta (verde).
   // H. Primavera e H. Cirurgia estão em alta consistente frente à meta geral (3–5 dias) — destacados em vermelho.
   // Meta diferenciada: São Marcelo e Recomeçar (perfil de longa permanência) = até 50 dias.
   // Em JULHO ambos ULTRAPASSARAM esse limite (52 dias) — passam de verde para vermelho.
-  const tmpEnfAboveDiffMeta = ['Recomeçar','São Marcelo'];
-  const tmpEnfRising = ['H. Primavera'];
-  const tmpEnf = [['Recomeçar',52],['São Marcelo',52],['H. Primavera',42],['H. Coração',16],['H. Renascença',15],['H. Cirurgia',15],['H. Santa Isabel',15]];
+  // Recomeçar e São Marcelo (meta diferenciada de 50 dias) voltaram a ficar DENTRO do limite em agosto (eram 52 em julho).
+  const tmpEnfAboveDiffMeta = [];
+  const tmpEnfRising = ['H. São Lucas'];
+  const tmpEnf = [['Recomeçar',49],['São Lucas',30],['São Marcelo',36],['H. Primavera',22],['H. Coração',15],['H. Renascença',18],['H. Cirurgia',11],['H. Santa Isabel',5]];
   const tmpEnfColors = tmpEnf.map(r=> tmpEnfAboveDiffMeta.includes(r[0]) ? COLORS.red : (tmpEnfRising.includes(r[0]) ? COLORS.red : COLORS.blue));
   hBar('cdTmpEnf', tmpEnf.map(r=>r[0]), tmpEnf.map(r=>r[1]), COLORS.blue, {dsize:11, colors:tmpEnfColors});
-  table('cdTmpEnfTable', ['Prestador','Maio','Junho','Julho','Variação'], [
-    {cells:['Recomeçar','42','45','52',vspanInv('↑ 7 dias')], alert:true},
-    {cells:['São Marcelo','46','42','52',vspanInv('↑ 10 dias')], alert:true},
-    {cells:['H. Primavera','28','32','42',vspanInv('↑ 10 dias')], alert:true},
-    {cells:['H. Coração','20','12','16',vspanInv('↑ 4 dias')]},
-    {cells:['H. Renascença','7','10','15',vspanInv('↑ 5 dias')]},
-    {cells:['H. Cirurgia','11','14','15',vspanInv('↑ 1 dia')]},
-    {cells:['H. Santa Isabel','9','9','15',vspanInv('↑ 6 dias')]},
+  table('cdTmpEnfTable', ['Prestador','Junho','Julho','Agosto','Variação'], [
+    {cells:['Recomeçar','45','52','49',vspan('↓ 3 dias')]},
+    {cells:['São Marcelo','42','52','36',vspan('↓ 16 dias')]},
+    {cells:['H. Primavera','32','42','22',vspan('↓ 20 dias')]},
+    {cells:['H. São Lucas','—','—','30',vspanInv('novo no detalhamento')], alert:true},
+    {cells:['H. Coração','12','16','15',vspanInv('↓ 1 dia')]},
+    {cells:['H. Renascença','10','15','18',vspanInv('↑ 3 dias')]},
+    {cells:['H. Cirurgia','14','15','11',vspan('↓ 4 dias')]},
+    {cells:['H. Santa Isabel','9','15','5',vspan('↓ 10 dias')]},
   ]);
 
-  const tmpUti = [['H. Renascença',17],['H. Cirurgia',15],['H. Santa Isabel',15],['H. Coração',14],['H. Primavera',11]];
+  const tmpUti = [['H. Cirurgia',19],['H. Santa Isabel',8],['H. Coração',10],['H. Renascença',10],['H. São Lucas',10],['H. Primavera',15]];
   hBar('cdTmpUti', tmpUti.map(r=>r[0]), tmpUti.map(r=>r[1]), COLORS.green, {dsize:11});
-  table('cdTmpUtiTable', ['Prestador','Maio','Junho','Julho','Variação'], [
-    {cells:['H. Renascença','16','10','17',vspanInv('↑ 7 dias')], alert:true},
-    {cells:['H. Cirurgia','9','13','15',vspanInv('↑ 2 dias')], alert:true},
-    {cells:['H. Santa Isabel','10','16','15',vspanInv('↓ 1 dia')]},
-    {cells:['H. Coração','8','20','14',vspanInv('↓ 6 dias')]},
-    {cells:['H. Primavera','17','36','11',vspanInv('↓ 25 dias')]},
+  table('cdTmpUtiTable', ['Prestador','Junho','Julho','Agosto','Variação'], [
+    {cells:['H. Cirurgia','13','15','19',vspanInv('↑ 4 dias')], alert:true},
+    {cells:['H. Primavera','36','11','15',vspanInv('↓ 21 dias (Jun→Ago)')]},
+    {cells:['H. Renascença','10','17','10',vspan('— 0 dias')]},
+    {cells:['H. São Lucas','—','—','10',vspanInv('novo no detalhamento')]},
+    {cells:['H. Coração','20','14','10',vspan('↓ 10 dias')]},
+    {cells:['H. Santa Isabel','16','15','8',vspan('↓ 8 dias')]},
   ]);
 };
 
 initFns['retro-prod'] = function(){
-  table('rrGeralTable', ['Métrica','Maio','Junho','Julho','Variação (Jun→Jul)'], [
-    {cells:['Total de Contas Auditadas','8.755','9.601','<b style="color:var(--teal)">7.744</b>', vspan('↓ 19,3%')], alert:true},
-    {cells:['Total de Recursos Apresentados','579','522','<b style="color:var(--teal)">517</b>', vspanInv('↓ 1,0%')]},
-    {cells:['Quantidade de Enfermeiros Auditores','13','13','<b style="color:var(--teal)">14</b>', vspan('↑ 7,7%') + ' <span style="color:var(--text-dim); font-size:10px; font-weight:400">· Tayná auditou em julho</span>']},
+  table('rrGeralTable', ['Métrica','Junho','Julho','Agosto','Variação (Jul→Ago)'], [
+    {cells:['Total de Contas Auditadas','9.601','7.744','<b style="color:var(--teal)">8.607</b>', vspan('↑ 11,1%')]},
+    {cells:['Total de Recursos Apresentados','522','517','<b style="color:var(--teal)">589</b>', vspanInv('↑ 13,9%')], alert:true},
+    {cells:['Quantidade de Enfermeiros Auditores','13','14','<b style="color:var(--teal)">14</b>', vspan('— 0%')]},
     {cells:['Quantidade de Prestadores Auditados','23','23','<b style="color:var(--teal)">23</b>', vspan('— 0%')]},
-    {cells:['Percentual de Recursos (%)','6,6%','5,44%','<b style="color:var(--teal)">6,68%</b>', vspanInv('↑ 1,24 p.p.')], alert:true},
+    {cells:['Percentual de Recursos (%)','5,44%','6,68%','<b style="color:var(--teal)">6,84%</b>', vspanInv('↑ 0,16 p.p.')]},
   ]);
   // Nota: variação de "Percentual de Recursos" é em pontos percentuais (p.p.), não % relativa, por ser um indicador que já é percentual.
 
   const prest = [
-    ['Hospital Renascença',3469,3283,2591],
-    ['Hospital Primavera',897,1690,1151],
-    ['Constat',698,431,438],
-    ['Ipes',769,650,396],
-    ['Clínica e Matern. St Helena',273,282,308],
-    ['Hospital Cirurgia',270,246,303],
-    ["Núcleo de Oncologia (NOS)",130,518,297],
-    ['Instituto de Hemoterapia (IHHS)',278,242,290],
-    ['Hospital São Lucas',302,211,280],
-    ['Decós',194,244,276],
-    ['Hospital Santa Izabel',127,148,193],
-    ['Vitta',148,386,190],
-    ['Avosos',320,72,184],
-    ['Hospital de Olhos',174,135,154],
-    ['Angiocor',81,121,113],
-    ['Helpmed',162,190,113],
-    ['Hospital do Coração',137,179,112],
-    ['Oncobrasil',82,84,108],
-    ['Oncohematos',36,209,95],
-    ['San Giovanni',98,178,51],
-    ['Clínica São Marcelo',53,50,48],
-    ['Recomeçar',46,41,42],
-    ['SOS',11,11,11],
-    ['Saúde Suporte*',2,0,0],
-    ['Unimed',2,0,0],
+    ['Hospital Renascença',3283,2591,2529],
+    ['Hospital Primavera',1690,1151,1586],
+    ['Constat',431,438,359],
+    ['Ipes',650,396,442],
+    ['Clínica e Matern. St Helena',282,308,256],
+    ['Hospital Cirurgia',246,303,324],
+    ["Núcleo de Oncologia (NOS)",518,297,278],
+    ['Instituto de Hemoterapia (IHHS)',242,290,428],
+    ['Hospital São Lucas',211,280,287],
+    ['Decós',244,276,404],
+    ['Hospital Santa Izabel',148,193,242],
+    ['Vitta',386,190,180],
+    ['Avosos',72,184,145],
+    ['Hospital de Olhos',135,154,159],
+    ['Angiocor',121,113,165],
+    ['Helpmed',190,113,129],
+    ['Hospital do Coração',179,112,177],
+    ['Oncobrasil',84,108,115],
+    ['Oncohematos',209,95,104],
+    ['San Giovanni',178,51,176],
+    ['Clínica São Marcelo',50,48,52],
+    ['Recomeçar',41,42,60],
+    ['SOS',11,11,10],
   ];
-  // Variação calculada Junho→Julho; Média = (Maio+Junho+Julho)/3
-  table('rrPrestadoresTable', ['Prestador','Maio','Junho','Julho','Média 3M','Variação (Jun→Jul)'],
+  // Variação calculada Julho→Agosto; Média = (Junho+Julho+Agosto)/3.
+  // Saúde Suporte e Unimed saíram da lista — sem registro em agosto (zerados havia 2 meses).
+  table('rrPrestadoresTable', ['Prestador','Junho','Julho','Agosto','Média 3M','Variação (Jul→Ago)'],
     prest.map(r=>{
-      const [nome,mai,jun,jul] = r;
-      const media = (mai+jun+jul)/3;
+      const [nome,jun,jul,ago] = r;
+      const media = (jun+jul+ago)/3;
       let varStr;
-      if(jun === 0){ varStr = jul===0 ? '— 0%' : '— (sem base em Junho)'; }
-      else{ const pct = (jul-jun)/jun*100; varStr = (pct>=0?'+':'') + pct.toFixed(1).replace('.',',') + '%'; }
+      if(jul === 0){ varStr = ago===0 ? '— 0%' : '— (sem base em Julho)'; }
+      else{ const pct = (ago-jul)/jul*100; varStr = (pct>=0?'+':'') + pct.toFixed(1).replace('.',',') + '%'; }
       return {cells:[
-        `<b style="color:var(--text)">${nome}</b>`, fmt(mai), fmt(jun), `<b>${fmt(jul)}</b>`,
+        `<b style="color:var(--text)">${nome}</b>`, fmt(jun), fmt(jul), `<b>${fmt(ago)}</b>`,
         media.toLocaleString('pt-BR',{minimumFractionDigits:1, maximumFractionDigits:1}), vspan(varStr)
       ]};
     }));
 
-  groupedBar('rrTopGrow', ['Avosos','Hospital São Lucas','Hospital Santa Izabel'],
-    [{label:'Junho', data:[72,211,148], color:'rgba(61,220,132,0.35)'}, {label:'Julho', data:[184,280,193], color:COLORS.green}], {horizontal:true, dsize:10});
-  groupedBar('rrTopDrop', ['San Giovanni','Oncohematos','Vitta'],
-    [{label:'Junho', data:[178,209,386], color:'rgba(242,73,92,0.35)'}, {label:'Julho', data:[51,95,190], color:COLORS.red}], {horizontal:true, dsize:10});
+  groupedBar('rrTopGrow', ['San Giovanni','Hospital do Coração','Instituto de Hemoterapia (IHHS)'],
+    [{label:'Julho', data:[51,112,290], color:'rgba(61,220,132,0.35)'}, {label:'Agosto', data:[176,177,428], color:COLORS.green}], {horizontal:true, dsize:10});
+  groupedBar('rrTopDrop', ['Avosos','Constat','Clínica e Matern. St Helena'],
+    [{label:'Julho', data:[184,438,308], color:'rgba(242,73,92,0.35)'}, {label:'Agosto', data:[145,359,256], color:COLORS.red}], {horizontal:true, dsize:10});
 
-  table('rrTipoTable', ['Tipo de Atendimento','Junho','Julho','Variação'], [
-    {cells:['Pronto Atendimento - Urgência','3.039','<b>2.572</b>', vspan('-15,4%')]},
-    {cells:['SADT','2.622','<b>1.828</b>', vspan('-30,3%')], alert:true},
-    {cells:['Internamento','1.558','<b>1.557</b>', vspan('-0,1%')]},
-    {cells:['Oncologia','1.683','<b>1.225</b>', vspan('-27,2%')], alert:true},
-    {cells:['Home Care - Hospitalar','326','<b>365</b>', vspan('+12,0%')]},
-    {cells:['Home Care - Remoção','173','<b>124</b>', vspan('-28,3%')]},
-    {cells:['Home Care - ID','83','<b>57</b>', vspan('-31,3%')]},
-    {cells:['Home Care - Gerenciamento','35','<b>13</b>', vspan('-62,9%')]},
-    {cells:['Home Care - AD','15','<b>3</b>', vspan('-80,0%')]},
-    {cells:['Internamento Psiquiátrico','43','<b>—</b>','<span style="color:var(--text-faint)">sem registro</span>']},
-    {cells:['Internamento Day Psiquiátrico','24','<b>—</b>','<span style="color:var(--text-faint)">sem registro</span>']},
-    {cells:['<b style="color:var(--text)">Total Geral</b>','<b>9.601</b>','<b style="color:var(--teal)">7.744</b>', vspan('-19,3%')], total:true}]);
+  const primaveraData = [['Contas apresentadas',1690,1151,1586],['Recursos gerados',87,148,218]];
+  table('rrPrimaveraTable', ['Métrica','Junho','Julho','Agosto','Variação (Jul→Ago)'], primaveraData.map(([nome,jun,jul,ago])=>{
+    const pct = jul ? ((ago-jul)/jul*100) : null;
+    const vs = pct===null ? '—' : (pct>=0?'+':'') + pct.toFixed(1).replace('.',',') + '%';
+    return {cells:[`<b style="color:var(--text)">${nome}</b>`, fmt(jun), fmt(jul), `<b>${fmt(ago)}</b>`, vspan(vs)], alert: nome==='Recursos gerados'};
+  }));
 
-  // Peso por tipo de conta (Retrospectiva) — equaliza a produtividade entre auditores, já que
-  // tipos diferentes de conta demandam tempos de auditoria muito diferentes (definido com o setor,
-  // com base no tempo médio por conta). Carga horária individual ainda não disponível — em análise
-  // com a coordenação; por ora a pontuação ponderada é um índice relativo, não uma taxa por hora.
-  const PESO_TIPO = {'Internamento':5, 'Home Care- ID':4, 'Oncologia':3, 'Home Care- AD':2, 'Home Care- Gerenciamento':2,
-    'Home Care- Hospitalar':1, 'Home Care- Remoção':1, 'Pronto Atendimento':1, 'SADT':1};
-  // Contas por auditor(a), por tipo de conta — julho/2026 (fonte: Contas por Auditor / Enfermeiro Auditor).
-  const auditoresPorTipo = {
-    'Marilia': {'Internamento':69, 'Pronto Atendimento':773, 'SADT':432},
-    "Maria D'Coeli": {'Internamento':112, 'Pronto Atendimento':785, 'SADT':127},
-    'Mônica': {'Home Care- AD':1, 'Home Care- ID':10, 'Internamento':68, 'Pronto Atendimento':743, 'SADT':92},
-    'Michelle': {'Internamento':116, 'Oncologia':425, 'SADT':160},
-    'Luciana': {'Internamento':106, 'Oncologia':66, 'SADT':452},
-    'Ana Fátima': {'Home Care- ID':21, 'Home Care- Remoção':92, 'Internamento':233, 'Pronto Atendimento':268},
-    'Inessa': {'Internamento':80, 'Oncologia':58, 'Pronto Atendimento':1, 'SADT':436},
-    'Ronaide': {'Oncologia':500},
-    'Mara': {'Home Care- AD':2, 'Home Care- Gerenciamento':13, 'Home Care- Hospitalar':365, 'Home Care- ID':26, 'Home Care- Remoção':32},
-    'Clarissa': {'Internamento':193, 'Oncologia':159, 'Pronto Atendimento':2, 'SADT':11},
-    'Genisete': {'Internamento':303},
-    'Marise': {'Internamento':267},
-    'Tayná': {'SADT':118},
-    'Renata': {'Internamento':10, 'Oncologia':17}
-  };
-  const auditoresTotal = Object.keys(auditoresPorTipo).map(nome =>
-    [nome, Object.values(auditoresPorTipo[nome]).reduce((a,b)=>a+b,0)]);
-  const auditoresPonderado = Object.keys(auditoresPorTipo).map(nome =>
-    [nome, Object.entries(auditoresPorTipo[nome]).reduce((s,[t,q])=> s + q*(PESO_TIPO[t]||0), 0)]);
+  table('rrTipoTable', ['Tipo de Atendimento','Julho','Agosto','Variação'], [
+    {cells:['Pronto Atendimento - Urgência','2.572','<b>2.472</b>', vspan('-3,9%')]},
+    {cells:['Internamento','1.557','<b>1.921</b>', vspan('+23,4%')]},
+    {cells:['SADT','1.828','<b>2.440</b>', vspan('+33,5%')]},
+    {cells:['Oncologia','1.225','<b>1.276</b>', vspan('+4,2%')]},
+    {cells:['Home Care - Hospitalar','365','<b>305</b>', vspan('-16,4%')]},
+    {cells:['Home Care - Remoção','124','<b>89</b>', vspan('-28,2%')]},
+    {cells:['Home Care - ID','57','<b>72</b>', vspan('+26,3%')]},
+    {cells:['Home Care - Gerenciamento','13','<b>32</b>', vspan('+146,2%')]},
+    {cells:['<b style="color:var(--text)">Total Geral</b>','<b>7.744</b>','<b style="color:var(--teal)">8.607</b>', vspan('+11,1%')], total:true}]);
+  // Home Care - AD e as categorias psiquiátricas não aparecem mais nas planilhas recentes.
 
-  const rrAuditorChart = hBar('rrAuditorTotal', auditoresTotal.map(r=>r[0]), auditoresTotal.map(r=>r[1]), COLORS.blue, {dsize:9.5});
+  // Soma das contas por auditor em agosto fecha em 8.430 — 177 contas abaixo do Total Geral (8.607)
+  // apurado em "Indicadores Gerais" e "Contas por Prestador". Diferença sinalizada para o setor confirmar.
+  const auditoresTotal = [['Inessa',1349],['Mônica',870],['Marília',861],['Ana Fátima',850],['Michelle',774],
+    ['Luciana',699],['Ronaide',628],['Mara',603],["Maria D'Coeli",500],['Genisete',324],['Marise',324],['Renata',287],['Tayná',184],['Clarissa',177]];
+  hBar('rrAuditorTotal', auditoresTotal.map(r=>r[0]), auditoresTotal.map(r=>r[1]), COLORS.blue, {dsize:9.5});
 
-  function renderAuditorChart(mode){
-    const src = (mode === 'ponderado') ? auditoresPonderado : auditoresTotal;
-    const sorted = [...src].sort((a,b)=> b[1]-a[1]);
-    rrAuditorChart.data.labels = sorted.map(r=>r[0]);
-    rrAuditorChart.data.datasets[0].data = sorted.map(r=>r[1]);
-    rrAuditorChart.data.datasets[0].backgroundColor = (mode === 'ponderado') ? COLORS.teal : COLORS.blue;
-    rrAuditorChart.update();
-    document.getElementById('rrAudBrutoBtn').classList.toggle('active', mode !== 'ponderado');
-    document.getElementById('rrAudPonderadoBtn').classList.toggle('active', mode === 'ponderado');
-    document.getElementById('rrAuditorInsight').innerHTML = (mode === 'ponderado')
-      ? 'Pontuação ponderada = soma de (quantidade × peso do tipo de conta), peso definido pelo setor conforme a complexidade/tempo médio de cada tipo. <b>Michelle</b> assume a liderança mesmo com menos contas brutas, por concentrar volume em Oncologia (peso 3) e Internamento (peso 5).'
-      : 'Ranking por volume bruto de contas, sem ajuste de peso. <b>Marília</b> lidera com 1.274 contas no período.';
-  }
-  document.getElementById('rrAudBrutoBtn').addEventListener('click', ()=> renderAuditorChart('bruto'));
-  document.getElementById('rrAudPonderadoBtn').addEventListener('click', ()=> renderAuditorChart('ponderado'));
-
-  const am = [['Marilia',1728,1484,1274],["Maria D'Coeli",1515,1386,1024],['Mônica',1330,1357,914],['Michelle',364,676,701],
-    ['Luciana',474,931,624],['Ana Fátima',562,620,614],['Inessa',476,809,575],['Ronaide',450,829,500],['Mara',698,431,438],
-    ['Clarissa',331,365,365],['Genisete',2270,256,303],['Marise',255,246,267],['Tayná',0,0,118],['Renata',302,211,27]];
+  const am = [['Inessa',809,575,1349],['Mônica',1357,914,870],['Marília',1484,1274,861],['Ana Fátima',620,614,850],
+    ['Michelle',676,701,774],['Luciana',931,624,699],['Ronaide',829,500,628],['Mara',431,438,603],
+    ["Maria D'Coeli",1386,1024,500],['Genisete',256,303,324],['Marise',246,267,324],['Renata',211,27,287],
+    ['Tayná',0,118,184],['Clarissa',365,365,177]];
   stackedBar('rrAuditorMensal', am.map(r=>r[0]),
-    [{label:'Maio', data:am.map(r=>r[1]), color:COLORS.m1}, {label:'Junho', data:am.map(r=>r[2]), color:COLORS.m2}, {label:'Julho', data:am.map(r=>r[3]), color:COLORS.m3}],
-    {lfont:9.5, extraRoom:true});
+    [{label:'Junho', data:am.map(r=>r[1]), color:COLORS.m1}, {label:'Julho', data:am.map(r=>r[2]), color:COLORS.m2}, {label:'Agosto', data:am.map(r=>r[3]), color:COLORS.m3}],
+    {lfont:9.5});
 
-  const rec = [['Hospital do Coração',112,80,'71,43%',true],['Onco Brasil',108,27,'25,00%',true],['Hospital São Lucas',280,47,'16,79%',true],
-    ['Hospital Primavera',1151,148,'12,86%',true],['Decós',276,34,'12,32%',false],['Hospital Cirurgia',303,36,'11,88%',false],
-    ['Hospital Santa Izabel',193,15,'7,77%',false],['Constat',438,22,'5,02%',false],['Clínica e Matern. St Helena',308,14,'4,55%',false],
-    ['Oncohematos',95,4,'4,21%',false],['Núcleo de Oncologia (NOS)',297,11,'3,70%',false],['Hospital Renascença',2591,77,'2,97%',false],
-    ['Avosos',184,2,'1,09%',false]];
+  const rec = [['Hospital do Coração',177,64,'36,16%',true],['Constat',359,86,'23,96%',true],['Hospital São Lucas',287,66,'23,00%',true],
+    ['Hospital Primavera',1586,218,'13,75%',false],['Oncohematos',104,10,'9,62%',false],['Decós',404,34,'8,42%',false],
+    ['Hospital Cirurgia',324,24,'7,41%',false],['San Giovanni',176,12,'6,82%',false],['Hospital Renascença',2529,70,'2,77%',false],
+    ['Núcleo de Oncologia (NOS)',278,4,'1,44%',false],['Vitta',180,1,'0,56%',false]];
   table('rrRecursosTable', ['Prestador','Quantidade Apresentada','Recursos','Índice de Retrabalho (%)'],
     rec.map(r=>({cells:[r[0], fmt(r[1]), r[2], r[3]], alert:r[4]})));
 
   // Carga horária semanal por médico (informada pelo setor) — usada para calcular a média de contas/hora.
   // MUDANÇA DE METODOLOGIA EM JULHO/2026: a tabela passa a ser MENSAL (antes era o trimestre abr–jun).
   // Parâmetro: contas no mês ÷ (carga horária semanal × 4,33 semanas, média de semanas por mês).
-  // Dr. LUCAS e Dr. FELIPE enviaram a produção de julho após o fechamento inicial do relatório —
-  // dados incorporados e reincluídos no cálculo da média da equipe.
-  const horasSemana = {'LUCAS':20, 'FELIPE':20, 'DAVI':15, 'MARIA DO CARMO':16, 'MARCO ANTÔNIO':15, 'CAMYLLA':15, 'VERA':16};
+  const horasSemana = {'LUCAS':20, 'FILIPE':20, 'DAVI':15, 'MARIA DO CARMO':16, 'MARCO ANTÔNIO':15, 'CAMYLLA':15, 'VERA':16};
   const SEMANAS_MES = 4.33;
   // "Perícia Presencial (Ipes Sede)" é atividade interna, não prestador — mantida no detalhamento,
   // mas sinalizada, para preservar a rastreabilidade do total informado pelo setor.
+  // LUCAS e FILIPE voltaram a enviar produção em agosto (estavam sem dado em julho).
   const medicos = [
-    ['DAVI', [['PJ Ipes',534],['Angiocor',177],['Decós',126],['Clínica e Maternidade Santa Helena',48],['Hospital de Olhos',41],['Hospital Santa Izabel',12]]],
-    ['MARIA DO CARMO', [['Oftalmos',296],['IVASC',76],['Clínica do Ombro',45],['Angiovascular',28],['Unicapse',23],
-      ['Instituto de ORL',16],['Gastrus',14],['P&G',13],['Semep',13],['SGE Nanibe',12],['Mastoclin',11],['Araújo e Hora',9],
-      ['LR',9],['Instituto da Catarata',8],['Cerne',7],['Oncoar',7],['Antônio Alberto',4],['SGEAAA',3],['Socia',2],
-      ['Dorothy',1],['San Juan',1],['Siqueira e França',1],['Valadares',1]]],
-    ['MARCO ANTÔNIO', [['Hospital Cirurgia',271],['SPA Ipes',156],['Hospital do Coração',98],['PJ Sarasqueta e Fernando Coelho',35],['Perícia Presencial (Ipes Sede)',31]]],
-    ['CAMYLLA', [['Hospital São Lucas',259],['Hospital Renascença',211],['Perícia Presencial (Ipes Sede)',36]]],
-    ['VERA', [['Hospital Primavera',180]]],
-    ['LUCAS', [['PJ Ipes',972],['Coopanest',526]]],
-    ['FELIPE', [['Coopanest',1424]]],
-  ];
+    ['DAVI', [['PJ Ipes',467],['Angiocor',99],['Décós',115],['Clínica e Maternidade Santa Helena',84],['Hospital de Olhos',65],['Hospital Santa Izabel',21]]],
+    ['LUCAS', [['PJ Ipes',853],['Coopanest',491]]],
+    ['FILIPE', [['Coopanest',1302]]],
+    ['MARCO ANTÔNIO', [['Hospital Cirurgia',288],['Hospital do Coração',162],['SPA Ipes',220],['PJ Sarasqueta e Fernando Coelho',48],['Perícia Presencial (Ipes Sede)',39]]],
+    ['CAMYLLA', [['Hospital São Lucas',274],['Hospital Renascença',255],['Perícia Presencial (Ipes Sede)',30]]],
+    ['VERA', [['Hospital Primavera',269]]],
+    ['MARIA DO CARMO', [['Oftalmos',228],['IVASE',63],['IOCM',54],['Clínica do Ombro',46],['Angiovascular',37],['Instituto de ORL',26],['Unicapse',25],['Instituto da Catarata',17],['Araújo e Hora',17],['Mastoclin',18],['Gastrus',15],['Endocentro',14],['Semep',11],['Oncoar',10],['P&G',8],['LR',7],['Cerne',5],['Siqueira e França',4],['SGEAAA',3],['Antônio Alberto',2],['Dorothy',2],['Ricardo Dantas',2],['San Juan',2],['Socia',2],['CHABP',1],['ORL Odonto',1],['Valadares',1]]],  ];
   table('rrMedicoTable', ['Médico','Total','Contas/Hora','Detalhamento por Prestador'], medicos.map(([nome,itens])=>{
     const semDado = itens.length === 0;
     const total = itens.reduce((s,[,v])=>s+v, 0);
@@ -2043,7 +1963,7 @@ initFns['retro-prod'] = function(){
         `<b style="color:var(--text)">${nome}</b>`,
         `<span style="color:var(--text-faint)">não informado</span>`,
         `<span style="color:var(--text-faint)">—</span>`,
-        `<span style="color:var(--amber)">Produção não encaminhada em julho — fora do cálculo da média da equipe</span>`
+        `<span style="color:var(--amber)">Produção não encaminhada em agosto — fora do cálculo da média da equipe</span>`
       ], alert:true};
     }
     return {cells:[
@@ -2179,12 +2099,38 @@ function resizeAllCharts(){
     Object.values(Chart.instances).forEach(function(c){ try{ c.resize(); }catch(e){} });
   }
 }
+/* Acordeoes (<details>) abertos no papel.
+   Na tela eles poupam espaco, mas num PDF ninguem clica: o conteudo
+   simplesmente nao existia na exportacao. Sao tres blocos de dados reais —
+   o glossario de termos tecnicos, a tabela de peso por tipo de conta e o
+   detalhamento por prestador de cada medico da Retrospectiva.
+   Precisa rodar ANTES do ajuste de paginacao, porque muda a altura dos blocos.
+   O estado que estava na tela fica guardado e volta depois da impressao. */
+function abrirDetalhesParaImpressao(){
+  document.querySelectorAll('details').forEach(function(d){
+    if(d.dataset.abertoAntes === undefined){ d.dataset.abertoAntes = d.open ? '1' : '0'; }
+    d.open = true;
+  });
+}
+function restaurarDetalhes(){
+  document.querySelectorAll('details').forEach(function(d){
+    if(d.dataset.abertoAntes !== undefined){
+      d.open = (d.dataset.abertoAntes === '1');
+      delete d.dataset.abertoAntes;
+    }
+  });
+}
 function enterPrintMode(){
+  /* Guarda a aba que estava aberta antes de tudo virar visivel. Os dois
+     caminhos normais (botao e Ctrl+P) ja fazem isso, mas deixar a rede aqui
+     garante que qualquer chamada devolva a tela ao estado certo depois. */
+  if(!__preprintTheme){ __preprintTheme = currentTheme(); }
   themes.forEach(function(t){
     document.getElementById('section-'+t).classList.add('active');
     if(!initialized[t]){ initFns[t](); initialized[t] = true; }
   });
   buildPrintKpis();
+  abrirDetalhesParaImpressao();
   document.documentElement.classList.add('print-mode');
   void document.body.offsetHeight;   // forca o recalculo do layout ja com a largura do papel
   resizeAllCharts();
@@ -2207,9 +2153,10 @@ function marcarPaineisQuebraveis(){
 function leavePrintMode(){
   if(!document.documentElement.classList.contains('print-mode')) return;
   document.documentElement.classList.remove('print-mode');
+  restaurarDetalhes();
   void document.body.offsetHeight;
   resizeAllCharts();
-  if(__preprintTheme){ showTheme(__preprintTheme); }
+  if(__preprintTheme){ showTheme(__preprintTheme); __preprintTheme = null; }
 }
 window.__enterPrintMode = enterPrintMode;   /* usado pelos testes de renderizacao */
 
