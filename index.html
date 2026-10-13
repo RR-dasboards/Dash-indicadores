@@ -1150,6 +1150,7 @@
 
     <div class="section-title"><h2>Contas por Tipo de Atendimento</h2><span class="tag">SETEMBRO · TOTAL 7.694</span></div>
     <div class="panel" id="rrTipoPanel" style="animation-delay:.05s">
+      <div class="desc">Linhas em vermelho: as 2 maiores quedas em número de contas (agosto → setembro)</div>
       <div id="rrTipoTable"></div>
     </div>
 
@@ -1347,6 +1348,7 @@ function groupedBar(id, labels, datasets, opts={}){
     type:'bar',
     data:{labels, datasets: datasets.map(d=>({label:d.label, data:d.data, backgroundColor:d.color, borderRadius:4}))},
     options:{indexAxis: horizontal?'y':'x', responsive:true, maintainAspectRatio:false,
+      layout:{padding: horizontal ? {right: opts.money ? 64 : 44} : {top:16}},
       plugins:{legend: opts.legend===false?{display:false}:legendTop(),
         tooltip:{...tooltipBase(), callbacks:{label:c=>` ${c.dataset.label}: ${valFmt(Number(horizontal?c.parsed.x:c.parsed.y)||0)}`}},
         datalabels:dLabel({size:opts.dsize||9, align: horizontal?'end':'end', anchor:'end', formatter:v=>valFmt(Number(v)||0)})},
@@ -1367,6 +1369,7 @@ function stackedBar(id, labels, datasets, opts={}){
     type:'bar',
     data:{labels, datasets: datasets.map(d=>({label:d.label, data:d.data, backgroundColor:d.color, borderRadius:3, stack:'s'}))},
     options:{indexAxis:'y', responsive:true, maintainAspectRatio:false,
+      layout:{padding:{right: needsRoom ? 34 : 44}},
       plugins:{legend:legendTop(), tooltip:{...tooltipBase(), callbacks:{
         title: items=>{ const lbl = items[0]?.label || ''; const cod = codesMap && codesMap[lbl]; return cod ? `${cod} — ${lbl}` : lbl; },
         label:c=>` ${c.dataset.label}: ${valFmt(Number(c.parsed.x)||0)}`
@@ -1411,8 +1414,9 @@ function lineChart(id, labels, datasets, opts={}){
     type:'line',
     data:{labels, datasets: datasets.map(d=>({label:d.label, data:d.data, borderColor:d.color, backgroundColor:d.color, tension:.35, pointRadius:4, pointBackgroundColor:d.color, borderWidth:2.5}))},
     options:{responsive:true, maintainAspectRatio:false,
-      plugins:{legend:{display:datasets.length>1, ...legendTop()}, tooltip:tooltipBase(), datalabels:dLabel({size:10, align:'top', anchor:'end', backgroundColor:'rgba(10,10,15,0.6)', formatter:v=>opts.suffix?v+opts.suffix:fmt(v)})},
-      scales:{x:{grid:{display:false}, ticks:{font:{size:10.5}}}, y:{grid:{color:COLORS.grid}, ticks:{font:{size:11}, callback:v=>opts.suffix?v+opts.suffix:v}, ...(opts.max?{max:opts.max}:{})}}}
+      layout:{padding:{left:8, right:22, top:4}},
+      plugins:{legend:{display:datasets.length>1, ...legendTop()}, tooltip:tooltipBase(), datalabels:dLabel({size:10, align:'top', anchor:'end', backgroundColor:'rgba(10,10,15,0.6)', formatter:v=>opts.suffix?String(v).replace('.',',')+opts.suffix:fmt(v)})},
+      scales:{x:{grid:{display:false}, ticks:{font:{size:10.5}}}, y:{grid:{color:COLORS.grid}, ticks:{font:{size:11}, callback:v=>opts.suffix?String(v).replace('.',',')+opts.suffix:v}, ...(opts.max?{max:opts.max}:{})}}}
   });
 }
 function extractSortValue(html){
@@ -1745,11 +1749,11 @@ initFns['reg-des'] = function(){
   // Janela Jul/Ago/Set — ids mantidos por compatibilidade: 'Abril' = Julho · 'Maio' = Agosto · 'Junho' = Setembro.
   const eletivoPrazoColors = [COLORS.red, COLORS.green, COLORS.amber, COLORS.blue, COLORS.purple];
   doughnut('rdSlaEletivoAbril', ['< 45 dias','≥ 45 dias','Plan. Pedidos','Onco/Quinz.','Cotas'],
-    [12, 514, 55, 185, 18], eletivoPrazoColors, {cutout:'55%', externalLabels:true, padX:48, padY:16});
+    [12, 514, 55, 185, 18], eletivoPrazoColors, {cutout:'55%', externalLabels:true, padX:48, padY:26});
   doughnut('rdSlaEletivoMaio', ['< 45 dias','≥ 45 dias','Plan. Pedidos','Onco/Quinz.','Cotas'],
-    [0, 405, 75, 150, 11], eletivoPrazoColors, {cutout:'55%', externalLabels:true, padX:48, padY:16});
+    [0, 405, 75, 150, 11], eletivoPrazoColors, {cutout:'55%', externalLabels:true, padX:48, padY:26});
   doughnut('rdSlaEletivoJunho', ['< 45 dias','≥ 45 dias','Plan. Pedidos','Onco/Quinz.','Cotas'],
-    [0, 523, 87, 183, 22], eletivoPrazoColors, {cutout:'55%', externalLabels:true, padX:48, padY:16});
+    [0, 523, 87, 183, 22], eletivoPrazoColors, {cutout:'55%', externalLabels:true, padX:48, padY:26});
 
   const urgenciaPrazoColors = [COLORS.green, COLORS.amber];
   doughnut('rdSlaUrgenciaAbril', ['< 3 dias','≥ 3 dias'], [974, 199], urgenciaPrazoColors, {cutout:'60%', externalLabels:true, padX:55, padY:14});
@@ -2369,15 +2373,22 @@ initFns['retro-des'] = function(){
   groupedBar('rrTopDrop', ['Hospital Primavera','Instituto de Hemoterapia (IHHS)','Ipes'],
     [{label:'Agosto', data:[1586,428,442], color:'rgba(242,73,92,0.35)'}, {label:'Setembro', data:[1146,237,257], color:COLORS.red}], {horizontal:true, dsize:10});
 
+  // Contas por tipo de atendimento (Agosto → Setembro).
+  // Regra de destaque (fixa, calculada): linha em vermelho = as 2 MAIORES QUEDAS em número absoluto
+  // de contas. Crescimento nunca recebe destaque vermelho — fica só com a variação em verde.
+  const tiposConta = [
+    ['SADT',2440,1759],
+    ['Internamento',1921,1628],
+    ['Pronto Atendimento - Urgência',2472,2615],
+    ['Oncologia',1276,1056],
+    ['Home Care - Hospitalar',305,387],
+    ['Home Care - ID',72,55],
+    ['Home Care - Remoção',89,141],
+    ['Home Care - Gerenciamento',32,43]];
+  const tiposMaioresQuedas = new Set(tiposConta.filter(r=>r[2]<r[1]).sort((a,b)=>(a[2]-a[1])-(b[2]-b[1])).slice(0,2).map(r=>r[0]));
+  const tipoVarStr = (ago,set)=>{ const p = Math.round((set-ago)/ago*1000)/10; return (p>=0?'+':'') + p.toFixed(1).replace('.',',') + '%'; };
   table('rrTipoTable', ['Tipo de Atendimento','Agosto','Setembro','Variação'], [
-    {cells:['SADT','2.440','<b>1.759</b>', vspan('-27,9%')], alert:true},
-    {cells:['Internamento','1.921','<b>1.628</b>', vspan('-15,3%')]},
-    {cells:['Pronto Atendimento - Urgência','2.472','<b>2.615</b>', vspan('+5,8%')]},
-    {cells:['Oncologia','1.276','<b>1.056</b>', vspan('-17,2%')]},
-    {cells:['Home Care - Hospitalar','305','<b>387</b>', vspan('+26,9%')], alert:true},
-    {cells:['Home Care - ID','72','<b>55</b>', vspan('-23,6%')]},
-    {cells:['Home Care - Remoção','89','<b>141</b>', vspan('+58,4%')], alert:true},
-    {cells:['Home Care - Gerenciamento','32','<b>43</b>', vspan('+34,4%')]},
+    ...tiposConta.map(([nome,ago,set])=>({cells:[nome, fmt(ago), `<b>${fmt(set)}</b>`, vspan(tipoVarStr(ago,set))], alert:tiposMaioresQuedas.has(nome)})),
     {cells:['Home Care - AD','<b>—</b>','<b>10</b>','<span style="color:var(--text-faint)">sem registro em agosto</span>']},
     {cells:['Internamento Psiquiátrico','—','<b>—</b>','<span style="color:var(--text-faint)">sem registro</span>']},
     {cells:['Internamento Day Psiquiátrico','—','<b>—</b>','<span style="color:var(--text-faint)">sem registro</span>']},
