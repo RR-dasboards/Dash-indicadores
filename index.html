@@ -1114,7 +1114,7 @@
     <div class="section-title"><h2>Produtividade Médica Individual</h2><span class="tag">CONTAS AUDITADAS POR MÉDICO · OUTUBRO 2026</span></div>
     <div class="panel" style="animation-delay:.05s">
       <div id="rrMedicoTable" style="margin-top:8px"></div>
-      <div class="insight warn"><b>Davi e Vera não encaminharam a produção</b> de outubro. Nos 5 médicos com dado nos dois meses, a produção sobe <b>14,2%</b> (3.969 → 4.531). <b>Dr. Filipe</b> segue sem carga horária informada (3º mês).</div>
+      <div class="insight warn">Equipe médica: <b>5.477 contas</b> (+9,2% vs setembro). <b>Dr. Filipe</b> segue sem carga horária informada (3º mês), sem taxa de contas/hora.</div>
       <div class="source-tag" style="margin-top:12px">Dados fornecidos por Tayná Santos Pimentel · Coordenadora de Auditoria Retrospectiva</div>
     </div>
   </section>
@@ -1551,7 +1551,7 @@ const KPIS = {
   {label:'Contas por Enfermeiros · Out', value:'8.836', delta:'= total oficial do mês · sem contas sem auditor', cls:'up', color:'green', note:'12 enfermeiros auditores · Genisete em férias'},
   {label:'Maior Volume Bruto', value:'1.352', delta:'Inessa · vs 985 em Setembro', cls:'up', color:'teal', note:'Pronto Atendimento 1.026 + SADT 264 + Internamento 62'},
   {label:'Maior Pontuação Ponderada', value:'2.690', delta:'Marise', cls:'up', color:'green', note:'Internamento (538 contas × peso 5)'},
-  {label:'Contas por Médicos · Out', value:'4.531', delta:'5 médicos com produção informada', cls:'neutral', color:'blue', note:'Davi e Vera não encaminharam · mesmos 5 médicos: +14,2%'},
+  {label:'Contas por Médicos · Out', value:'5.477', delta:'+9,2% vs Setembro (5.015)', cls:'up', color:'blue', note:'7 médicos · inclui Dr. Filipe, sem carga horária'},
   {label:'Maior Taxa Médica', value:'15,31/h', delta:'Dr. Lucas · 1.326 contas', cls:'up', color:'purple', note:'Contas ÷ (h/semana × 4,33)'},
  ],
  'retro-des':[
@@ -2324,7 +2324,7 @@ initFns['retro-prod'] = function(){
   // Carga horária semanal por médico (informada pelo setor) — usada para calcular a média de contas/hora.
   // Parâmetro: contas no mês ÷ (carga horária semanal × 4,33 semanas, média de semanas por mês).
   // Dr. FILIPE segue sem carga horária semanal informada (3º mês) — total exibido, mas sem taxa de contas/hora.
-  // DAVI e VERA: produção de outubro não encaminhada.
+  // DAVI e VERA: produção de outubro encaminhada depois (atualizada em 13/11).
   const horasSemana = {'LUCAS':20, 'DAVI':15, 'MARIA DO CARMO':16, 'MARCO ANTÔNIO':15, 'CAMYLLA':15, 'VERA':16};
   const SEMANAS_MES = 4.33;
   // "Perícia Presencial (Ipes Sede)" é atividade interna, não prestador — mantida no detalhamento,
@@ -2332,11 +2332,11 @@ initFns['retro-prod'] = function(){
   const medicos = [
     ['FILIPE', [['Coopanest',1512]]],
     ['LUCAS', [['Coopanest',702],['PJ Ipes',624]]],
+    ['DAVI', [['PJ Ipes',320],['Decós',108],['Angiocor',96],['Clínica e Maternidade Santa Helena',85],['Hospital Santa Izabel',85],['Hospital de Olhos',72]]],
     ['MARCO ANTÔNIO', [['Hospital Cirurgia',333],['SPA Ipes',189],['Hospital do Coração',113],['PJ Sarasqueta e Fernando Coelho',18]]],
     ['MARIA DO CARMO', [['Oftalmos',242],['Medicina Santa Cecília',71],['Clínica do Ombro',44],['Angiovascular',36],['IOCM',31],['Araújo e Hora',28],['Unicapse',27],['SGE Nanibe',23],['Mastoclin',19],['Instituto de ORL',12],['Gastrus',11],['Endocentro',10],['Oncoar',9],['Cerne',7],['LR',6],['ORL Odonto',6],['Dorothy',1],['JR Ocke',1],['MH e VL',1],['PCampos',1],['San Juan',1],['Siqueira e França',1],['Socia',1],['Valadares e Souza',1],['Zacarias Junior',1]]],
     ['CAMYLLA', [['Hospital São Lucas',199],['Hospital Renascença',184],['Perícia Presencial (Ipes Sede)',39],['Hospital São Lucas (OPME)',27]]],
-    ['DAVI', []],
-    ['VERA', []],
+    ['VERA', [['Hospital Primavera',180]]],
   ];
   table('rrMedicoTable', ['Médico','Total','Contas/Hora','Detalhamento por Prestador'], medicos.map(([nome,itens])=>{
     const semDado = itens.length === 0;
